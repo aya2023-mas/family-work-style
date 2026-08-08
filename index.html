@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会社の家族 - 家族目線の会社評価サービス</title>
+  <style>
+    :root {
+      --beige: #f5f0e8;
+      --beige-dark: #e8dfd3;
+      --sage: #8aab8e;
+      --sage-dark: #5c7a60;
+      --sage-light: #eef4ef;
+      --warm: #d4a574;
+      --warm-light: #f0dcc4;
+      --text: #4a4a4a;
+      --text-light: #7a7a7a;
+      --white: #ffffff;
+      --shadow: 0 4px 24px rgba(92, 122, 96, 0.1);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--beige);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.65;
+    }
+
+    /* ===== ヘッダーバナー ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--sage-light) 0%, var(--beige) 50%, var(--warm-light) 100%);
+      padding: 2.5rem 1.5rem 2rem;
+      border-bottom: 1px solid var(--beige-dark);
+      overflow: hidden;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-text { flex: 1; min-width: 240px; }
+
+    .hero-logo {
+      font-size: clamp(2rem, 5.5vw, 2.75rem);
+      font-weight: 800;
+      color: var(--sage-dark);
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      margin-bottom: 0.65rem;
+    }
+
+    .hero-catch {
+      font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+      font-weight: 600;
+      color: var(--sage-dark);
+      line-height: 1.45;
+      margin-bottom: 0.55rem;
+    }
+
+    .hero-desc {
+      font-size: clamp(0.85rem, 2vw, 0.95rem);
+      color: var(--text-light);
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-illust {
+      flex-shrink: 0;
+      width: min(200px, 42vw);
+      align-self: center;
+      padding: 0.5rem;
+    }
+
+    .hero-illust svg { width: 100%; height: auto; display: block; }
+
+    .open-modal-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      background: var(--sage-dark);
+      color: var(--white);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      min-height: 48px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(92, 122, 96, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .open-modal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(92, 122, 96, 0.35);
+    }
+
+    .open-modal-btn--outline {
+      background: var(--white);
+      color: var(--sage-dark);
+      border: 2px solid var(--sage);
+      box-shadow: none;
+    }
+
+    .open-modal-btn--outline:hover { background: var(--sage-light); }
+
+    /* ===== メイン ===== */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .search-section {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      border: 1px solid var(--beige-dark);
+    }
+
+    .search-section h2 {
+      font-size: 1rem;
+      color: var(--sage-dark);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--sage-light);
+      border-radius: 12px;
+      padding: 0.4rem;
+      border: 1px solid var(--beige-dark);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.85rem 1rem;
+      font-size: 1rem;
+      outline: none;
+      color: var(--text);
+    }
+
+    .search-box input::placeholder { color: #aaa; }
+
+    .search-count {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 0.6rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      color: var(--sage-dark);
+      font-weight: 700;
+      padding-left: 0.75rem;
+      border-left: 4px solid var(--warm);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-light);
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px dashed var(--beige-dark);
+    }
+
+    /* ===== 口コミカード ===== */
+    #reviewList { display: flex; flex-direction: column; gap: 1rem; }
+
+    .review-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--beige-dark);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: cardIn 0.4s ease;
+    }
+
+    .review-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(92, 122, 96, 0.14);
+    }
+
+    .review-card.is-new {
+      border-color: var(--sage);
+      box-shadow: 0 4px 24px rgba(92, 122, 96, 0.2);
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .card-company {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--sage-dark);
+    }
+
+    .card-badge {
+      display: inline-block;
+      background: var(--sage-light);
+      color: var(--sage-dark);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 50px;
+      margin-top: 0.3rem;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .meta-tag {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      background: var(--beige);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .remote-badge {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      border: 1.5px solid transparent;
+    }
+
+    .remote-badge--yes {
+      background: #eef4ef;
+      color: var(--sage-dark);
+      border-color: var(--sage);
+    }
+
+    .remote-badge--partial {
+      background: var(--warm-light);
+      color: #8a6340;
+      border-color: var(--warm);
+    }
+
+    .remote-badge--no {
+      background: var(--beige);
+      color: var(--text-light);
+      border-color: var(--beige-dark);
+    }
+
+    .btn-select-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .btn-select {
+      flex: 1;
+      min-width: 90px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-select input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .btn-select span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 2px solid var(--beige-dark);
+      background: var(--white);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-select input:checked + span {
+      background: var(--sage-light);
+      border-color: var(--sage-dark);
+      color: var(--sage-dark);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(92, 122, 96, 0.18);
+    }
+
+    .btn-select input:focus-visible + span {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+
+    .card-ratings {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      padding: 0.85rem;
+      background: var(--sage-light);
+      border-radius: 10px;
+    }
+
+    .card-ratings-badges {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .rating-item {
+      font-size: 0.82rem;
+    }
+
+    .rating-item .label { color: var(--text-light); display: block; margin-bottom: 0.15rem; }
+
+    .rating-item .value {
+      color: var(--warm);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .card-comment {
+      font-size: 0.92rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: var(--beige);
+      border-radius: 8px;
+      border-left: 3px solid var(--warm);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--beige-dark);
+    }
+
+    .helpful-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      background: var(--white);
+      border: 1.5px solid var(--sage);
+      color: var(--sage-dark);
+      padding: 0.65rem 1.25rem;
+      min-height: 44px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .helpful-btn:hover { background: var(--sage-light); transform: scale(1.03); }
+
+    .helpful-btn.clicked {
+      background: var(--sage-light);
+      border-color: var(--sage-dark);
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--beige-dark);
+    }
+
+    /* ===== モーダル ===== */
+    #modalOverlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(74, 74, 74, 0.45);
+      z-index: 9999;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+    }
+
+    #modalOverlay.show { display: flex; }
+
+    .modal-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 580px;
+      max-height: calc(100dvh - 2rem);
+      margin: auto;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--beige-dark);
+      background: linear-gradient(135deg, var(--sage-light), var(--beige));
+      border-radius: var(--radius) var(--radius) 0 0;
+      position: sticky; top: 0; z-index: 1;
+    }
+
+    .modal-header h2 { font-size: 1.15rem; color: var(--sage-dark); }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .form-section { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--beige-dark); }
+    .form-section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    .form-section-title {
+      font-size: 1rem; font-weight: 700; color: var(--sage-dark);
+      margin-bottom: 1rem; padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--warm);
+    }
+
+    .form-group { margin-bottom: 1.25rem; }
+
+    .form-group label,
+    .form-group .field-label {
+      display: block; font-size: 0.9rem; font-weight: 600;
+      color: var(--text); margin-bottom: 0.5rem;
+    }
+
+    .q-num { color: var(--warm); margin-right: 0.25rem; }
+
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
+      width: 100%; padding: 0.85rem 1rem;
+      border: 1px solid var(--beige-dark); border-radius: 8px;
+      font-size: 1rem; font-family: inherit; background: var(--white);
+    }
+
+    .form-group select { min-height: 48px; }
+
+    .form-group textarea { min-height: 80px; resize: vertical; }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { outline: none; border-color: var(--sage); }
+
+    .radio-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .radio-group label,
+    .radio-inline label {
+      display: flex; align-items: center; gap: 0.65rem;
+      font-weight: 400; cursor: pointer;
+      padding: 0.75rem 1rem; border-radius: 8px;
+      min-height: 48px;
+      border: 1px solid var(--beige-dark); background: var(--beige);
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .radio-group input[type="radio"],
+    .radio-inline input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      accent-color: var(--sage-dark);
+    }
+
+    .radio-group label:hover,
+    .radio-inline label:hover { background: var(--sage-light); border-color: var(--sage); }
+
+    .radio-group label:has(input:checked),
+    .radio-inline label:has(input:checked) {
+      background: var(--sage-light); border-color: var(--sage-dark);
+    }
+
+    .radio-inline { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .radio-inline label { flex: 1; min-width: 140px; justify-content: center; }
+
+    .sub-field {
+      margin-top: 0.75rem; padding: 1rem;
+      background: var(--beige); border-radius: 8px;
+      border: 1px solid var(--beige-dark);
+      overflow: hidden; max-height: 220px; opacity: 1;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+    }
+
+    .sub-field.hidden {
+      max-height: 0; opacity: 0; margin-top: 0;
+      padding-top: 0; padding-bottom: 0; border-color: transparent; overflow: hidden;
+    }
+
+    .role-questions { transition: opacity 0.35s ease; }
+    .role-questions.hidden { display: none; }
+    .role-questions.is-entering { animation: fadeSlideIn 0.35s ease; }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .star-field {
+      margin-bottom: 1.5rem; padding: 1rem;
+      background: var(--beige); border-radius: 10px; border: 1px solid var(--beige-dark);
+      transition: opacity 0.25s;
+    }
+
+    .star-field.is-na { opacity: 0.55; }
+    .star-field.is-na .star-rating { pointer-events: none; }
+
+    .star-rating {
+      display: flex; gap: 0.35rem;
+      cursor: pointer; margin-bottom: 0.35rem;
+    }
+
+    .star-rating span {
+      color: #ddd; transition: color 0.15s, transform 0.1s;
+      user-select: none; line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      font-size: 2rem;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .star-rating span:hover { transform: scale(1.1); }
+    .star-rating span.active,
+    .star-rating span.hover { color: var(--warm); }
+
+    .star-hint { font-size: 0.82rem; color: #999; min-height: 1.2em; }
+
+    .na-check {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-top: 0.6rem; font-size: 0.85rem; color: var(--text-light);
+      cursor: pointer; font-weight: 400;
+    }
+
+    .na-check input { width: auto; cursor: pointer; accent-color: var(--sage-dark); }
+
+    .comment-sub { margin-top: 0.6rem; }
+
+    .comment-sub textarea {
+      min-height: 60px; font-size: 0.9rem; width: 100%;
+      padding: 0.65rem 0.85rem; border: 1px solid var(--beige-dark);
+      border-radius: 8px; font-family: inherit;
+    }
+
+    .consent-box {
+      margin-top: 1.5rem; padding: 1rem 1.15rem;
+      background: var(--beige); border: 1px solid var(--beige-dark); border-radius: 10px;
+    }
+
+    .consent-label {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      font-size: 0.88rem; color: var(--text); line-height: 1.55;
+      cursor: pointer; font-weight: 400;
+    }
+
+    .consent-label input {
+      margin-top: 0.25rem; flex-shrink: 0;
+      width: 1.1rem; height: 1.1rem; cursor: pointer; accent-color: var(--sage-dark);
+    }
+
+    .consent-error { display: none; margin-top: 0.5rem; font-size: 0.82rem; color: #c0392b; }
+    .consent-error.show { display: block; }
+
+    .form-actions {
+      display: flex; gap: 0.75rem; justify-content: flex-end;
+      margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--beige-dark);
+    }
+
+    .btn-close {
+      background: var(--beige); color: var(--text-light); border: none;
+      padding: 0.85rem 1.5rem; border-radius: 8px; font-size: 1rem; cursor: pointer;
+      min-height: 48px;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--warm), #e0b88a);
+      color: var(--white); border: none;
+      padding: 0.85rem 1.75rem; border-radius: 8px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      min-height: 48px;
+    }
+
+    .btn-close:hover { background: var(--beige-dark); }
+
+    .btn-submit:hover { box-shadow: 0 4px 12px rgba(212, 165, 116, 0.4); }
+
+    .btn-submit:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 2rem 1.25rem 1.75rem; }
+      .hero-inner { flex-direction: column; text-align: center; }
+      .hero-illust { order: -1; width: min(180px, 55vw); margin: 0 auto; padding: 0; }
+      .open-modal-btn { width: 100%; justify-content: center; min-height: 48px; font-size: 1rem; padding: 0.85rem 1.5rem; }
+      main { padding: 1.5rem 1rem 2.5rem; }
+      .search-section { padding: 1.25rem; }
+      .search-box input { font-size: 1rem; padding: 1rem; }
+      .section-header { flex-direction: column; align-items: stretch; }
+      .section-header .open-modal-btn { width: 100%; }
+      .card-ratings { grid-template-columns: 1fr 1fr; }
+      .radio-inline label { min-width: 100%; }
+      .btn-select { min-width: calc(33.333% - 0.35rem); }
+      .btn-select-group { gap: 0.4rem; }
+      .helpful-btn { width: 100%; }
+
+      #modalOverlay {
+        padding: 0;
+        align-items: stretch;
+      }
+
+      .modal-box {
+        max-height: 100dvh;
+        min-height: 100dvh;
+        border-radius: 0;
+        margin: 0;
+      }
+
+      .modal-header { padding: 1rem 1.25rem; }
+
+      .modal-body {
+        padding: 1.25rem;
+        padding-bottom: 0.5rem;
+      }
+
+      .form-actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--white);
+        margin-top: 1rem;
+        padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+        flex-direction: column-reverse;
+        gap: 0.65rem;
+      }
+
+      .form-actions .btn-close,
+      .form-actions .btn-submit {
+        width: 100%;
+        font-size: 1.05rem;
+      }
+
+      .consent-label input {
+        width: 1.35rem;
+        height: 1.35rem;
+      }
+
+      .na-check { min-height: 44px; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダーバナー -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1 class="hero-logo">会社の家族</h1>
+        <p class="hero-catch">家族目線で知る、<br>働きやすさのリアル</p>
+        <p class="hero-desc">社員本人・ご家族の声から、本当の働きやすさが見えてくる</p>
+        <button class="open-modal-btn" type="button" id="heroPostBtn">✏️ 口コミを投稿する</button>
+      </div>
+      <div class="hero-illust" aria-hidden="true">
+        <!-- 手書きスケッチ風・おうちのみ -->
+        <svg viewBox="0 0 200 145" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 地面（横線） -->
+          <line x1="16" y1="128" x2="184" y2="128" stroke="#5c7a60" stroke-width="2.8" stroke-linecap="round"/>
+
+          <!-- 三角屋根 -->
+          <path d="M44 76 L100 27 L156 76 Z"
+                stroke="#5c7a60" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"
+                fill="#d4e8d6"/>
+
+          <!-- 本体（手書き風のわずかなゆらぎ） -->
+          <path d="M53 73 L147 72 L148 126 L52 127 Z"
+                stroke="#5c7a60" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"
+                fill="#f5f0e8"/>
+
+          <!-- 左窓（十字枠） -->
+          <rect x="63" y="85" width="22" height="22"
+                stroke="#5c7a60" stroke-width="2.2" fill="#fff8ee"/>
+          <line x1="74" y1="85" x2="74" y2="107" stroke="#5c7a60" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="63" y1="96" x2="85" y2="96" stroke="#5c7a60" stroke-width="1.6" stroke-linecap="round"/>
+
+          <!-- 右窓（十字枠） -->
+          <rect x="115" y="85" width="22" height="22"
+                stroke="#5c7a60" stroke-width="2.2" fill="#fff8ee"/>
+          <line x1="126" y1="85" x2="126" y2="107" stroke="#5c7a60" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="115" y1="96" x2="137" y2="96" stroke="#5c7a60" stroke-width="1.6" stroke-linecap="round"/>
+
+          <!-- 丸いドア -->
+          <rect x="87" y="101" width="26" height="26" rx="13"
+                stroke="#5c7a60" stroke-width="2.2" fill="#d4a574"/>
+          <circle cx="107" cy="114" r="2" fill="#5c7a60"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <!-- 検索 -->
+    <section class="search-section">
+      <h2>🔍 企業名で口コミを探す</h2>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="例：〇〇商事、IT、製造..." aria-label="企業名で口コミを探す">
+      </div>
+      <p class="search-count" id="searchCount"></p>
+    </section>
+
+    <!-- 口コミ一覧 -->
+    <div class="section-header">
+      <h2 class="section-title">口コミ一覧</h2>
+      <button class="open-modal-btn open-modal-btn--outline" type="button" id="listPostBtn">✏️ 口コミを投稿する</button>
+    </div>
+
+    <div id="reviewList"></div>
+    <div class="no-results hidden" id="noResults">該当する口コミが見つかりませんでした。</div>
+  </main>
+
+  <footer>&copy; 2026 会社の家族 — 家族目線の会社評価サービス</footer>
+
+  <!-- 口コミ投稿モーダル -->
+  <div id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-header"><h2>口コミ投稿フォーム</h2></div>
+      <div class="modal-body">
+        <form id="reviewForm">
+
+          <div class="form-section">
+            <h3 class="form-section-title">基本情報</h3>
+            <div class="form-group">
+              <span class="field-label">あなたの立場</span>
+              <div class="radio-inline">
+                <label><input type="radio" name="role" value="employee" checked><span>社員本人</span></label>
+                <label><input type="radio" name="role" value="family"><span>家族</span></label>
+              </div>
+              <div class="sub-field hidden" id="familyRelationField">
+                <span class="field-label">ご関係（家族の場合）</span>
+                <div class="radio-group">
+                  <label><input type="radio" name="familyRelation" value="配偶者・パートナー"><span>配偶者・パートナー</span></label>
+                  <label><input type="radio" name="familyRelation" value="子供"><span>子供</span></label>
+                  <label><input type="radio" name="familyRelation" value="その他"><span>その他</span></label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="companyName">会社名</label>
+              <input type="text" id="companyName" placeholder="例：〇〇商事" required>
+            </div>
+            <div class="form-group">
+              <label for="jobType">役職・職種</label>
+              <select id="jobType" required>
+                <option value="">選択してください</option>
+                <option value="一般社員">一般社員</option>
+                <option value="管理職">管理職</option>
+                <option value="営業職">営業職</option>
+                <option value="事務・企画職">事務・企画職</option>
+                <option value="専門・エンジニア職">専門・エンジニア職</option>
+                <option value="その他">その他</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="employmentType">入社形態</label>
+              <select id="employmentType" required>
+                <option value="">選択してください</option>
+                <option value="新卒">新卒</option>
+                <option value="中途">中途</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="joinPeriod">入社年度・在籍時期</label>
+              <select id="joinPeriod" required>
+                <option value="">選択してください</option>
+                <option value="2020年代">2020年代</option>
+                <option value="2010年代">2010年代</option>
+                <option value="2000年代以前">2000年代以前</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="household">世帯状況</label>
+              <select id="household" required>
+                <option value="">選択してください</option>
+                <option value="共働き">共働き</option>
+                <option value="片働き">片働き</option>
+                <option value="独身">独身</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="children">お子さま</label>
+              <select id="children" required>
+                <option value="">選択してください</option>
+                <option value="あり（未就学児）">あり（未就学児）</option>
+                <option value="あり（小学生以上）">あり（小学生以上）</option>
+                <option value="なし">なし</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="commuteTime">通勤時間（片道）</label>
+              <select id="commuteTime" required>
+                <option value="">選択してください</option>
+                <option value="30分未満">30分未満</option>
+                <option value="30分〜1時間">30分〜1時間</option>
+                <option value="1時間〜1時間半">1時間〜1時間半</option>
+                <option value="1時間半以上">1時間半以上</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <span class="field-label">リモートワーク</span>
+              <div class="btn-select-group">
+                <label class="btn-select"><input type="radio" name="remoteWork" value="あり" required><span>あり</span></label>
+                <label class="btn-select"><input type="radio" name="remoteWork" value="一部あり"><span>一部あり</span></label>
+                <label class="btn-select"><input type="radio" name="remoteWork" value="なし"><span>なし</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section role-questions" id="employeeQuestions">
+            <h3 class="form-section-title">社員本人としての評価</h3>
+            <div class="form-group">
+              <span class="field-label"><span class="q-num">1.</span>1か月の平均残業時間</span>
+              <div class="radio-group">
+                <label><input type="radio" name="overtime" value="なし"><span>なし</span></label>
+                <label><input type="radio" name="overtime" value="～10時間"><span>～10時間</span></label>
+                <label><input type="radio" name="overtime" value="～20時間"><span>～20時間</span></label>
+                <label><input type="radio" name="overtime" value="～40時間"><span>～40時間</span></label>
+                <label><input type="radio" name="overtime" value="40時間以上"><span>40時間以上</span></label>
+              </div>
+            </div>
+            <div class="star-field" id="empPaidLeaveField">
+              <span class="field-label"><span class="q-num">2.</span>有休の取りやすさ</span>
+              <div class="star-rating" id="empPaidLeave"></div>
+              <input type="hidden" name="empPaidLeave" value="0">
+              <div class="star-hint" data-hint="empPaidLeave">★をクリックして評価を選んでください（1〜5）</div>
+              <div class="comment-sub"><textarea name="empPaidLeaveComment" placeholder="例：子供のイベントはすべて参加できた"></textarea></div>
+            </div>
+            <div class="star-field" id="empHolidayRecoveryField">
+              <span class="field-label"><span class="q-num">3.</span>休日の回復度</span>
+              <div class="star-rating" id="empHolidayRecovery"></div>
+              <input type="hidden" name="empHolidayRecovery" value="0">
+              <div class="star-hint" data-hint="empHolidayRecovery">★をクリックして評価を選んでください（1〜5）</div>
+            </div>
+            <div class="star-field" id="empFamilyTimeField">
+              <span class="field-label"><span class="q-num">4.</span>平日の家族時間</span>
+              <div class="star-rating" id="empFamilyTime"></div>
+              <input type="hidden" name="empFamilyTime" value="0">
+              <div class="star-hint" data-hint="empFamilyTime">★をクリックして評価を選んでください（1〜5）</div>
+            </div>
+            <div class="star-field" id="empShortTimeField">
+              <span class="field-label"><span class="q-num">5.</span>時短勤務への理解度</span>
+              <div class="star-rating" id="empShortTime"></div>
+              <input type="hidden" name="empShortTime" value="0">
+              <div class="star-hint" data-hint="empShortTime">★をクリックして評価を選んでください（1〜5）</div>
+              <label class="na-check"><input type="checkbox" name="empShortTimeNA" data-na-for="empShortTime"><span>対象外（時短勤務を利用していない／該当しない）</span></label>
+            </div>
+            <div class="star-field" id="empBenefitsField">
+              <span class="field-label"><span class="q-num">6.</span>福利厚生・手当の充実度</span>
+              <div class="star-rating" id="empBenefits"></div>
+              <input type="hidden" name="empBenefits" value="0">
+              <div class="star-hint" data-hint="empBenefits">★をクリックして評価を選んでください（1〜5）</div>
+              <div class="comment-sub"><textarea name="empBenefitsComment" placeholder="例：社員食堂が無料、住宅手当あり"></textarea></div>
+            </div>
+            <div class="form-group">
+              <label for="empFreeText"><span class="q-num">7.</span>自由記述（この会社のリアルな働きやすさについて）</label>
+              <textarea id="empFreeText" name="empFreeText" placeholder="働き方のリアル、良かった点・困った点など、自由にお書きください"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section role-questions hidden" id="familyQuestions">
+            <h3 class="form-section-title">家族目線での評価</h3>
+            <div class="form-group">
+              <span class="field-label"><span class="q-num">1.</span>平日の帰宅時間</span>
+              <div class="radio-group">
+                <label><input type="radio" name="returnTime" value="～19:00"><span>～19:00</span></label>
+                <label><input type="radio" name="returnTime" value="～21:00"><span>～21:00</span></label>
+                <label><input type="radio" name="returnTime" value="～23:00"><span>～23:00</span></label>
+                <label><input type="radio" name="returnTime" value="23:00以降"><span>23:00以降</span></label>
+                <label><input type="radio" name="returnTime" value="シフト制・不定期"><span>シフト制・不定期</span></label>
+              </div>
+            </div>
+            <div class="star-field" id="famFatigueField">
+              <span class="field-label"><span class="q-num">2.</span>社員本人の疲労度・ストレスの様子</span>
+              <div class="star-rating" id="famFatigue"></div>
+              <input type="hidden" name="famFatigue" value="0">
+              <div class="star-hint" data-hint="famFatigue">★をクリックして評価を選んでください（1〜5）</div>
+            </div>
+            <div class="form-group">
+              <span class="field-label"><span class="q-num">3.</span>休日に会社の電話やメールが鳴る頻度</span>
+              <div class="radio-group">
+                <label><input type="radio" name="holidayContact" value="なし"><span>なし</span></label>
+                <label><input type="radio" name="holidayContact" value="たまにある"><span>たまにある</span></label>
+                <label><input type="radio" name="holidayContact" value="毎週ある"><span>毎週ある</span></label>
+                <label><input type="radio" name="holidayContact" value="常に連絡対応"><span>常に連絡対応</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <span class="field-label"><span class="q-num">4.</span>休日出勤の頻度</span>
+              <div class="radio-group">
+                <label><input type="radio" name="holidayWork" value="なし"><span>なし</span></label>
+                <label><input type="radio" name="holidayWork" value="年に数回"><span>年に数回</span></label>
+                <label><input type="radio" name="holidayWork" value="月1～2回"><span>月1～2回</span></label>
+                <label><input type="radio" name="holidayWork" value="頻繁にある"><span>頻繁にある</span></label>
+              </div>
+            </div>
+            <div class="star-field" id="famParentingField">
+              <span class="field-label"><span class="q-num">5.</span>妊娠・出産・育児に対する職場の雰囲気</span>
+              <div class="star-rating" id="famParenting"></div>
+              <input type="hidden" name="famParenting" value="0">
+              <div class="star-hint" data-hint="famParenting">★をクリックして評価を選んでください（1〜5）</div>
+              <label class="na-check"><input type="checkbox" name="famParentingNA" data-na-for="famParenting"><span>対象外（該当しない）</span></label>
+            </div>
+            <div class="form-group">
+              <span class="field-label"><span class="q-num">6.</span>残業や仕事の家庭生活への影響</span>
+              <div class="radio-group">
+                <label><input type="radio" name="familyImpact" value="なし"><span>なし</span></label>
+                <label><input type="radio" name="familyImpact" value="やや負担"><span>やや負担</span></label>
+                <label><input type="radio" name="familyImpact" value="かなり負担"><span>かなり負担</span></label>
+              </div>
+              <div class="comment-sub"><textarea name="familyImpactComment" placeholder="例：疲れて寝ている"></textarea></div>
+            </div>
+            <div class="star-field" id="famBenefitsField">
+              <span class="field-label"><span class="q-num">7.</span>家族目線での福利厚生・手当の満足度</span>
+              <div class="star-rating" id="famBenefits"></div>
+              <input type="hidden" name="famBenefits" value="0">
+              <div class="star-hint" data-hint="famBenefits">★をクリックして評価を選んでください（1〜5）</div>
+              <div class="comment-sub"><textarea name="famBenefitsComment" placeholder="例：住宅手当が全くない"></textarea></div>
+            </div>
+            <div class="form-group">
+              <label for="famFreeText"><span class="q-num">8.</span>自由記述（この会社で良かった点・困った点・家族としての本音）</label>
+              <textarea id="famFreeText" name="famFreeText" placeholder="家族として感じたリアルな体験を、自由にお書きください"></textarea>
+            </div>
+          </div>
+
+          <div class="consent-box">
+            <label class="consent-label">
+              <input type="checkbox" id="consentCheck" name="consent">
+              <span>実際に在籍している（していた）社員、またはそのご家族による事実に基づく投稿であり、特定の個人に対する誹謗中傷が含まれていないことに同意します。</span>
+            </label>
+            <p class="consent-error" id="consentError">投稿前に同意事項へのチェックが必要です。</p>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-close" id="closeModalBtn">閉じる</button>
+            <button type="submit" class="btn-submit" id="submitBtn" disabled>送信する</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      /* ===== LocalStorage ===== */
+      var STORAGE_KEY = 'kaisha-no-kazoku-reviews-v1';
+
+      var defaultReviews = [
+        {
+          id: 1, company: '〇〇商事', role: 'employee',
+          roleLabel: '社員本人', household: '共働き', children: 'あり（未就学児）',
+          commuteTime: '30分未満',
+          remoteWork: '一部あり',
+          helpful: 12,
+          comment: '参観日や運動会の時に有給が取りやすく、家族との時間がしっかり持てる',
+          ratings: [
+            { label: '通勤時間', value: '30分未満' },
+            { label: '有休', value: '★★★★★ 5' },
+            { label: '残業', value: '～10時間' },
+            { label: '家族時間', value: '★★★★★ 5' },
+            { label: '福利厚生', value: '★★★★☆ 4' }
+          ]
+        },
+        {
+          id: 2, company: '△△ITソリューションズ', role: 'family',
+          roleLabel: '家族（配偶者・パートナー）', household: '共働き', children: 'あり（小学生以上）',
+          commuteTime: '30分〜1時間',
+          remoteWork: 'あり',
+          helpful: 8,
+          comment: '残業が少なく夕食を家族全員で食べられる。ただ出張が多め',
+          ratings: [
+            { label: '通勤時間', value: '30分〜1時間' },
+            { label: '帰宅時間', value: '～19:00' },
+            { label: '疲労度', value: '★★★☆☆ 3' },
+            { label: '休日連絡', value: 'たまにある' },
+            { label: '福利厚生', value: '★★★★☆ 4' }
+          ]
+        },
+        {
+          id: 3, company: '□□製造株式会社', role: 'employee',
+          roleLabel: '社員本人', household: '片働き', children: 'あり（未就学児）',
+          commuteTime: '1時間〜1時間半',
+          remoteWork: 'なし',
+          helpful: 15,
+          comment: '育休・産休が取得しやすく、復帰後も時短勤務が認められている。子育て中の社員が多い',
+          ratings: [
+            { label: '通勤時間', value: '1時間〜1時間半' },
+            { label: '有休', value: '★★★★★ 5' },
+            { label: '残業', value: '～20時間' },
+            { label: '時短理解', value: '★★★★★ 5' },
+            { label: '福利厚生', value: '★★★★★ 5' }
+          ]
+        }
+      ];
+
+      function getRemoteBadgeClass(value) {
+        if (value === 'あり') return 'remote-badge--yes';
+        if (value === '一部あり') return 'remote-badge--partial';
+        return 'remote-badge--no';
+      }
+
+      function normalizeReview(review) {
+        var r = Object.assign({}, review);
+        if (!r.commuteTime) {
+          var foundCommute = (r.ratings || []).find(function (item) { return item.label === '通勤時間'; });
+          r.commuteTime = foundCommute ? foundCommute.value : '—';
+        }
+        if (!r.remoteWork) {
+          var foundRemote = (r.ratings || []).find(function (item) {
+            return item.label === 'リモート' || item.label === 'リモート等';
+          });
+          r.remoteWork = foundRemote ? foundRemote.value : '—';
+        }
+        if (!r.ratings) r.ratings = [];
+        r.ratings = r.ratings.filter(function (item) {
+          return item.label !== 'リモート' && item.label !== 'リモート等';
+        });
+        var hasCommute = r.ratings.some(function (item) { return item.label === '通勤時間'; });
+        if (!hasCommute) {
+          r.ratings = [{ label: '通勤時間', value: r.commuteTime }].concat(r.ratings);
+        }
+        return r;
+      }
+
+      function loadFromStorage() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            var data = JSON.parse(raw);
+            var loaded = Array.isArray(data.reviews) && data.reviews.length > 0
+              ? data.reviews.map(normalizeReview)
+              : defaultReviews.slice();
+            return {
+              reviews: loaded,
+              nextId: typeof data.nextId === 'number' ? data.nextId : 4,
+              helpfulClicked: Array.isArray(data.helpfulClicked) ? data.helpfulClicked : []
+            };
+          }
+        } catch (err) {
+          console.warn('LocalStorage の読み込みに失敗しました', err);
+        }
+        var initial = {
+          reviews: defaultReviews.slice(),
+          nextId: 4,
+          helpfulClicked: []
+        };
+        saveToStorage(initial);
+        return initial;
+      }
+
+      function saveToStorage(data) {
+        try {
+          var payload = data || {
+            reviews: reviews,
+            nextId: nextId,
+            helpfulClicked: helpfulClicked
+          };
+          var cleaned = payload.reviews.map(function (r) {
+            var copy = Object.assign({}, r);
+            delete copy.isNew;
+            return copy;
+          });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            reviews: cleaned,
+            nextId: payload.nextId,
+            helpfulClicked: payload.helpfulClicked
+          }));
+        } catch (err) {
+          console.warn('LocalStorage の保存に失敗しました', err);
+        }
+      }
+
+      var stored = loadFromStorage();
+      var reviews = stored.reviews;
+      var nextId = stored.nextId;
+      var helpfulClicked = stored.helpfulClicked;
+      var reviewList = document.getElementById('reviewList');
+      var searchInput = document.getElementById('searchInput');
+      var searchCount = document.getElementById('searchCount');
+      var noResults = document.getElementById('noResults');
+
+      /* ===== ユーティリティ ===== */
+      function renderStars(n) {
+        if (!n || n === 0) return '—';
+        var full = '★'.repeat(n);
+        var empty = '☆'.repeat(5 - n);
+        return full + empty + ' ' + n;
+      }
+
+      function getRadio(name) {
+        var el = document.querySelector('input[name="' + name + '"]:checked');
+        return el ? el.value : '';
+      }
+
+      function getVal(name) {
+        var el = document.querySelector('input[name="' + name + '"]');
+        return el ? parseInt(el.value) : 0;
+      }
+
+      function getTextarea(name) {
+        var el = document.querySelector('[name="' + name + '"]');
+        return el ? el.value.trim() : '';
+      }
+
+      /* ===== 口コミカード描画 ===== */
+      function createReviewCard(review) {
+        var card = document.createElement('article');
+        card.className = 'review-card' + (review.isNew ? ' is-new' : '');
+        card.dataset.id = review.id;
+        card.dataset.company = review.company;
+
+        var displayRatings = (review.ratings || []).filter(function (r) {
+          return r.label !== 'リモート' && r.label !== 'リモート等';
+        });
+
+        var ratingsHtml = displayRatings.map(function (r) {
+          return '<div class="rating-item"><span class="label">' + r.label + '</span><span class="value">' + r.value + '</span></div>';
+        }).join('');
+
+        var remoteBadgeHtml = '';
+        if (review.remoteWork && review.remoteWork !== '—') {
+          remoteBadgeHtml =
+            '<div class="card-ratings-badges">' +
+              '<span class="remote-badge ' + getRemoteBadgeClass(review.remoteWork) + '">' +
+                'リモート：' + escapeHtml(review.remoteWork) +
+              '</span>' +
+            '</div>';
+        }
+
+        var alreadyClicked = helpfulClicked.indexOf(review.id) !== -1;
+
+        card.innerHTML =
+          '<div class="card-header">' +
+            '<div><div class="card-company">' + escapeHtml(review.company) + '</div>' +
+            '<span class="card-badge">' + escapeHtml(review.roleLabel) + '</span></div>' +
+          '</div>' +
+          '<div class="card-meta">' +
+            '<span class="meta-tag">🏠 ' + escapeHtml(review.household) + '</span>' +
+            '<span class="meta-tag">👶 ' + escapeHtml(review.children) + '</span>' +
+          '</div>' +
+          '<div class="card-ratings">' + remoteBadgeHtml + ratingsHtml + '</div>' +
+          (review.comment ? '<p class="card-comment">「' + escapeHtml(review.comment) + '」</p>' : '') +
+          '<div class="card-footer">' +
+            '<button type="button" class="helpful-btn' + (alreadyClicked ? ' clicked' : '') + '" data-id="' + review.id + '">' +
+              '参考になった (<span class="helpful-count">' + review.helpful + '</span>)' +
+            '</button>' +
+          '</div>';
+
+        return card;
+      }
+
+      function escapeHtml(str) {
+        var d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
+      function renderReviews(filter) {
+        var query = (filter || '').trim().toLowerCase();
+        var filtered = reviews.filter(function (r) {
+          return !query || r.company.toLowerCase().indexOf(query) !== -1;
+        });
+
+        reviewList.innerHTML = '';
+        filtered.forEach(function (review) {
+          reviewList.appendChild(createReviewCard(review));
+        });
+
+        noResults.classList.toggle('hidden', filtered.length > 0);
+        searchCount.textContent = filtered.length + ' 件の口コミ' + (query ? '（「' + filter + '」で絞り込み中）' : '');
+      }
+
+      function addReview(review) {
+        reviews.unshift(review);
+        saveToStorage();
+        renderReviews(searchInput.value);
+        setTimeout(function () {
+          var first = reviewList.querySelector('.review-card');
+          if (first) first.classList.remove('is-new');
+          review.isNew = false;
+        }, 2000);
+      }
+
+      /* ===== 参考になった ===== */
+      reviewList.addEventListener('click', function (e) {
+        var btn = e.target.closest('.helpful-btn');
+        if (!btn || btn.classList.contains('clicked')) return;
+        var id = parseInt(btn.dataset.id);
+        var review = reviews.find(function (r) { return r.id === id; });
+        if (review) {
+          review.helpful++;
+          if (helpfulClicked.indexOf(id) === -1) {
+            helpfulClicked.push(id);
+          }
+          saveToStorage();
+          btn.querySelector('.helpful-count').textContent = review.helpful;
+          btn.classList.add('clicked');
+        }
+      });
+
+      /* ===== 検索 ===== */
+      searchInput.addEventListener('input', function () {
+        renderReviews(this.value);
+      });
+
+      /* ===== モーダル ===== */
+      var modalOverlay = document.getElementById('modalOverlay');
+      var reviewForm = document.getElementById('reviewForm');
+      var familyRelationField = document.getElementById('familyRelationField');
+      var employeeQuestions = document.getElementById('employeeQuestions');
+      var familyQuestions = document.getElementById('familyQuestions');
+      var roleInputs = document.querySelectorAll('input[name="role"]');
+      var consentCheck = document.getElementById('consentCheck');
+      var submitBtn = document.getElementById('submitBtn');
+      var consentError = document.getElementById('consentError');
+
+      var starLabels = ['', 'とても不満', '不満', '普通', '良い', 'とても良い'];
+      var starFields = [
+        'empPaidLeave', 'empHolidayRecovery', 'empFamilyTime',
+        'empShortTime', 'empBenefits',
+        'famFatigue', 'famParenting', 'famBenefits'
+      ];
+
+      function openModal() {
+        modalOverlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        updateRoleSections();
+      }
+
+      function closeModal() {
+        modalOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+
+      ['heroPostBtn', 'listPostBtn'].forEach(function (id) {
+        document.getElementById(id).addEventListener('click', openModal);
+      });
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', function (e) { if (e.target === modalOverlay) closeModal(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+      function getSelectedRole() {
+        var s = document.querySelector('input[name="role"]:checked');
+        return s ? s.value : 'employee';
+      }
+
+      function updateRoleSections() {
+        var isFamily = getSelectedRole() === 'family';
+        familyRelationField.classList.toggle('hidden', !isFamily);
+        employeeQuestions.classList.toggle('hidden', isFamily);
+        familyQuestions.classList.toggle('hidden', !isFamily);
+        var active = isFamily ? familyQuestions : employeeQuestions;
+        active.classList.remove('is-entering');
+        void active.offsetWidth;
+        active.classList.add('is-entering');
+      }
+
+      roleInputs.forEach(function (input) { input.addEventListener('change', updateRoleSections); });
+
+      /* ===== 星評価 ===== */
+      function clearStar(name) {
+        var hidden = document.querySelector('input[name="' + name + '"]');
+        var hint = document.querySelector('[data-hint="' + name + '"]');
+        document.querySelectorAll('#' + name + ' span').forEach(function (s) { s.classList.remove('active', 'hover'); });
+        if (hidden) hidden.value = '0';
+        if (hint) hint.textContent = '★をクリックして評価を選んでください（1〜5）';
+      }
+
+      function isNA(name) {
+        var cb = document.querySelector('input[data-na-for="' + name + '"]');
+        return cb && cb.checked;
+      }
+
+      function initStarRating(containerId, hiddenName) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        for (var i = 1; i <= 5; i++) {
+          var star = document.createElement('span');
+          star.setAttribute('data-value', i);
+          star.textContent = '★';
+          star.setAttribute('role', 'button');
+          container.appendChild(star);
+        }
+        var stars = container.querySelectorAll('span');
+        var hiddenInput = document.querySelector('input[name="' + hiddenName + '"]');
+        var hint = document.querySelector('[data-hint="' + hiddenName + '"]');
+        stars.forEach(function (star) {
+          function selectStar(el) {
+            if (isNA(hiddenName)) return;
+            var value = parseInt(el.getAttribute('data-value'));
+            hiddenInput.value = value;
+            if (hint) hint.textContent = '★'.repeat(value) + ' ' + value + ' - ' + starLabels[value];
+            stars.forEach(function (s) { s.classList.toggle('active', parseInt(s.getAttribute('data-value')) <= value); });
+          }
+          star.addEventListener('click', function () { selectStar(this); });
+          star.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            selectStar(this);
+          });
+          star.addEventListener('mouseenter', function () {
+            if (isNA(hiddenName)) return;
+            var value = parseInt(this.getAttribute('data-value'));
+            stars.forEach(function (s) { s.classList.toggle('hover', parseInt(s.getAttribute('data-value')) <= value); });
+          });
+          star.addEventListener('mouseleave', function () {
+            stars.forEach(function (s) { s.classList.remove('hover'); });
+          });
+        });
+      }
+
+      starFields.forEach(function (name) { initStarRating(name, name); });
+
+      document.querySelectorAll('input[data-na-for]').forEach(function (cb) {
+        cb.addEventListener('change', function () {
+          var name = this.getAttribute('data-na-for');
+          var field = document.getElementById(name + 'Field');
+          if (field) field.classList.toggle('is-na', this.checked);
+          if (this.checked) clearStar(name);
+        });
+      });
+
+      function resetStars() {
+        starFields.forEach(clearStar);
+        document.querySelectorAll('input[data-na-for]').forEach(function (cb) {
+          cb.checked = false;
+          var field = document.getElementById(cb.getAttribute('data-na-for') + 'Field');
+          if (field) field.classList.remove('is-na');
+        });
+      }
+
+      function validateStars(names) {
+        for (var i = 0; i < names.length; i++) {
+          if (isNA(names[i])) continue;
+          if (parseInt(document.querySelector('input[name="' + names[i] + '"]').value) === 0) return false;
+        }
+        return true;
+      }
+
+      function validateRadio(name) {
+        return document.querySelector('input[name="' + name + '"]:checked') !== null;
+      }
+
+      consentCheck.addEventListener('change', function () {
+        submitBtn.disabled = !this.checked;
+        if (this.checked) consentError.classList.remove('show');
+      });
+
+      /* ===== フォーム送信 → 口コミ追加 ===== */
+      function buildReviewFromForm() {
+        var role = getSelectedRole();
+        var company = document.getElementById('companyName').value.trim();
+        var household = document.getElementById('household').value;
+        var children = document.getElementById('children').value;
+        var commuteTime = document.getElementById('commuteTime').value;
+        var remoteWork = getRadio('remoteWork');
+        var roleLabel = role === 'employee' ? '社員本人' : '家族（' + getRadio('familyRelation') + '）';
+        var ratings = [{ label: '通勤時間', value: commuteTime }];
+        var comment = '';
+
+        if (role === 'employee') {
+          ratings = ratings.concat([
+            { label: '有休', value: renderStars(getVal('empPaidLeave')) },
+            { label: '残業', value: getRadio('overtime') },
+            { label: '家族時間', value: renderStars(getVal('empFamilyTime')) },
+            { label: '福利厚生', value: renderStars(getVal('empBenefits')) }
+          ]);
+          comment = getTextarea('empFreeText') ||
+            getTextarea('empPaidLeaveComment') ||
+            getTextarea('empBenefitsComment') ||
+            '（自由記述なし）';
+        } else {
+          ratings = ratings.concat([
+            { label: '帰宅時間', value: getRadio('returnTime') },
+            { label: '疲労度', value: renderStars(getVal('famFatigue')) },
+            { label: '休日連絡', value: getRadio('holidayContact') },
+            { label: '休日出勤', value: getRadio('holidayWork') },
+            { label: '福利厚生', value: renderStars(getVal('famBenefits')) }
+          ]);
+          comment = getTextarea('famFreeText') ||
+            getTextarea('familyImpactComment') ||
+            getTextarea('famBenefitsComment') ||
+            '（自由記述なし）';
+        }
+
+        return {
+          id: nextId++,
+          company: company,
+          role: role,
+          roleLabel: roleLabel,
+          household: household,
+          children: children,
+          commuteTime: commuteTime,
+          remoteWork: remoteWork,
+          helpful: 0,
+          isNew: true,
+          comment: comment,
+          ratings: ratings
+        };
+      }
+
+      reviewForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!consentCheck.checked) {
+          consentError.classList.add('show');
+          consentCheck.focus();
+          return;
+        }
+
+        var role = getSelectedRole();
+
+        if (role === 'family' && !validateRadio('familyRelation')) { alert('ご関係を選択してください'); return; }
+        if (!validateRadio('remoteWork')) { alert('リモートワークを選択してください'); return; }
+
+        if (role === 'employee') {
+          if (!validateRadio('overtime')) { alert('1. 1か月の平均残業時間を選択してください'); return; }
+          if (!validateStars(['empPaidLeave', 'empHolidayRecovery', 'empFamilyTime', 'empShortTime', 'empBenefits'])) {
+            alert('★評価項目（2〜6）をすべて選択してください（対象外にチェックした項目は除く）'); return;
+          }
+        } else {
+          if (!validateRadio('returnTime')) { alert('1. 平日の帰宅時間を選択してください'); return; }
+          if (!validateRadio('holidayContact')) { alert('3. 休日に会社の電話やメールが鳴る頻度を選択してください'); return; }
+          if (!validateRadio('holidayWork')) { alert('4. 休日出勤の頻度を選択してください'); return; }
+          if (!validateRadio('familyImpact')) { alert('6. 残業や仕事の家庭生活への影響を選択してください'); return; }
+          if (!validateStars(['famFatigue', 'famParenting', 'famBenefits'])) {
+            alert('★評価項目（2, 5, 7）をすべて選択してください（対象外にチェックした項目は除く）'); return;
+          }
+        }
+
+        var newReview = buildReviewFromForm();
+        addReview(newReview);
+
+        reviewForm.reset();
+        resetStars();
+        submitBtn.disabled = true;
+        consentError.classList.remove('show');
+        document.querySelector('input[name="role"][value="employee"]').checked = true;
+        updateRoleSections();
+        closeModal();
+
+        window.scrollTo({ top: document.querySelector('.section-header').offsetTop - 20, behavior: 'smooth' });
+      });
+
+      /* ===== 初期表示 ===== */
+      renderReviews('');
+    })();
+  </script>
+
+</body>
+</html>
