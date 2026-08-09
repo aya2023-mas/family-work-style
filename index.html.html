@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会社の家族 - 働きやすさのリアル</title>
+<style>
+body {
+font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+margin: 0;
+padding: 0;
+color: #1e5338;
+background: linear-gradient(180deg, #f7f9f6 0%, #ffffff 50%);
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.container {
+width: 100%;
+max-width: 480px;
+padding: 40px 20px;
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+/* シンプルなラインアートの家アイコン */
+.house-icon {
+width: 90px;
+height: auto;
+margin-bottom: 25px;
+}
+
+.main-title {
+font-size: 28px;
+font-weight: bold;
+margin: 0 0 10px 0;
+letter-spacing: 0.05em;
+color: #1e5338;
+}
+
+.sub-title {
+font-size: 16px;
+line-height: 1.6;
+text-align: center;
+margin: 0 0 20px 0;
+color: #5c7f5d;
+}
+
+.description {
+font-size: 14px;
+line-height: 1.8;
+text-align: center;
+margin: 0 0 35px 0;
+color: #333333;
+/* 単語の途中で不自然に改行されないように設定 */
+word-break: keep-all;
+overflow-wrap: break-word;
+}
+
+.submit-btn {
+background-color: #0f5838;
+color: white;
+border: none;
+border-radius: 25px;
+padding: 12px 30px;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+text-decoration: none;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.search-container {
+background-color: white;
+border-radius: 15px;
+width: 100%;
+padding: 20px;
+box-sizing: border-box;
+box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+margin-top: 30px;
+border: 1px solid #e2ebe0;
+}
+
+.search-title {
+font-size: 16px;
+font-weight: bold;
+margin: 0 0 15px 0;
+color: #5c7f5d;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.search-input-wrapper {
+background-color: #edf4ec;
+border: 1px solid #d9ebd6;
+border-radius: 10px;
+padding: 12px 15px;
+margin-bottom: 10px;
+}
+
+.search-input {
+width: 100%;
+border: none;
+background: transparent;
+font-size: 14px;
+color: #5c7f5d;
+padding: 0;
+outline: none;
+}
+
+.search-input::placeholder {
+color: #8fae90;
+}
+
+.review-count {
+font-size: 12px;
+color: #5c7f5d;
+margin: 0;
+}
+
+.list-title-container {
+width: 100%;
+display: flex;
+align-items: center;
+margin-top: 40px;
+margin-bottom: 20px;
+}
+
+.list-title-mark {
+width: 4px;
+height: 24px;
+background-color: #5c7f5d;
+border-radius: 2px;
+margin-right: 10px;
+}
+
+.list-title {
+font-size: 18px;
+font-weight: bold;
+color: #5c7f5d;
+margin: 0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- シンプルな緑ラインの家SVG -->
+<svg class="house-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 45L50 15L85 45" stroke="#1e5338" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M72 35V20H80V42" stroke="#1e5338" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="23" y="45" width="54" height="40" stroke="#1e5338" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="33" y="55" width="12" height="12" stroke="#1e5338" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="55" y="55" width="12" height="12" stroke="#1e5338" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+<h1 class="main-title">会社の家族</h1>
+
+<p class="sub-title">
+家族目線で知る、<br>
+働きやすさのリアル
+</p>
+
+<!-- 改行を固定して綺麗に見せる部分 -->
+<p class="description">
+社員本人・ご家族の声から、本当の働きやすさが<br>みえてくる
+</p>
+
+<a href="#" class="submit-btn">
+✏️ 口コミを投稿する
+</a>
+
+<div class="search-container">
+<p class="search-title">
+🔍 企業名で口コミを探す
+</p>
+<div class="search-input-wrapper">
+<input type="text" class="search-input" placeholder="例：〇〇商事、IT、製造...">
+</div>
+<p class="review-count">3 件の口コミ</p>
+</div>
+
+<div class="list-title-container">
+<div class="list-title-mark"></div>
+<h2 class="list-title">口コミ一覧</h2>
+</div>
+
+</div>
+</body>
+</html>
+
