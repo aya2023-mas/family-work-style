@@ -72,7 +72,8 @@ button { width: 100%; padding: 10px; background: #28a745; color: white; border: 
 const SUPABASE_URL = 'https://uzmxuoktvywktrwiumbx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jymAUZEcLhfk4tMxerrgnw_GOVB99YV';
 
-const supabase = supabaseClient.createClient(SUPABASE_URL, SUPABASE_KEY);
+// ライブラリの読み込み待ち対策も含めた初期化
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 // フォームの開閉
 const toggleBtn = document.getElementById('toggle-form-btn');
@@ -81,21 +82,21 @@ toggleBtn.addEventListener('click', () => {
 formContainer.classList.toggle('hidden');
 });
 
-// 口コミ一覧の取得（承認済み is_approved = true のみ）
+// 口口コミ一覧の取得（承認済み is_approved = true のみ）
 async function fetchReviews() {
+const listDiv = document.getElementById('reviews-list');
+if (!supabase) {
+listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
+return;
+}
+
 const { data, error } = await supabase
 .from('reviews')
 .select('*')
 .eq('is_approved', true)
 .order('created_at', { ascending: false });
 
-const listDiv = document.getElementById('reviews-list');
-if (error) {
-listDiv.innerHTML = '<p>口コミの読み込みに失敗しました。</p>';
-return;
-}
-
-if (!data || data.length === 0) {
+if (error || !data || data.length === 0) {
 listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
 return;
 }
@@ -109,13 +110,18 @@ listDiv.innerHTML = data.map(r => `
 `).join('');
 }
 
-// 口コミ投稿フォームの送信処理
+// 口口コミ投稿フォームの送信処理
 document.getElementById('review-form').addEventListener('submit', async (e) => {
 e.preventDefault();
 const company_name = document.getElementById('company_name').value;
 const position = document.getElementById('position').value;
 const rating = parseInt(document.getElementById('rating').value);
 const content = document.getElementById('content').value;
+
+if (!supabase) {
+alert('データベースに接続できませんでした。');
+return;
+}
 
 const { error } = await supabase
 .from('reviews')
@@ -137,3 +143,4 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
+
