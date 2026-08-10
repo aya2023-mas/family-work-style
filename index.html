@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>会社の家族 - 働きやすさのリアル</title>
 <!-- Supabase JS Library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f9f9f9; color: #333; }
 .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -68,39 +68,41 @@ button { width: 100%; padding: 10px; background: #28a745; color: white; border: 
 </div>
 
 <script>
-// Supabaseの接続設定
+document.addEventListener('DOMContentLoaded', () => {
 const SUPABASE_URL = 'https://uzmxuoktvywktrwiumbx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jymAUZEcLhfk4tMxerrgnw_GOVB99YV';
 
-// ライブラリの読み込み待ち対策も含めた初期化
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 // フォームの開閉
 const toggleBtn = document.getElementById('toggle-form-btn');
 const formContainer = document.getElementById('form-container');
+if (toggleBtn && formContainer) {
 toggleBtn.addEventListener('click', () => {
 formContainer.classList.toggle('hidden');
 });
+}
 
-// 口口コミ一覧の取得（承認済み is_approved = true のみ）
+// 口口コミ一覧の取得
 async function fetchReviews() {
 const listDiv = document.getElementById('reviews-list');
-if (!supabase) {
-listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
+if (!supabaseClient) {
+if (listDiv) listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
 return;
 }
 
-const { data, error } = await supabase
+const { data, error } = await supabaseClient
 .from('reviews')
 .select('*')
 .eq('is_approved', true)
 .order('created_at', { ascending: false });
 
 if (error || !data || data.length === 0) {
-listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
+if (listDiv) listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
 return;
 }
 
+if (listDiv) {
 listDiv.innerHTML = data.map(r => `
 <div class="review-card">
 <div class="review-company">${r.company_name} <span style="font-size:0.8em; font-weight:normal; color:#666;">(${r.position || '未設定'})</span></div>
@@ -109,21 +111,24 @@ listDiv.innerHTML = data.map(r => `
 </div>
 `).join('');
 }
+}
 
-// 口口コミ投稿フォームの送信処理
-document.getElementById('review-form').addEventListener('submit', async (e) => {
+// 投稿送信処理
+const reviewForm = document.getElementById('review-form');
+if (reviewForm) {
+reviewForm.addEventListener('submit', async (e) => {
 e.preventDefault();
 const company_name = document.getElementById('company_name').value;
 const position = document.getElementById('position').value;
 const rating = parseInt(document.getElementById('rating').value);
 const content = document.getElementById('content').value;
 
-if (!supabase) {
+if (!supabaseClient) {
 alert('データベースに接続できませんでした。');
 return;
 }
 
-const { error } = await supabase
+const { error } = await supabaseClient
 .from('reviews')
 .insert([{ company_name, position, rating, content }]);
 
@@ -131,16 +136,16 @@ if (error) {
 alert('送信に失敗しました: ' + error.message);
 } else {
 alert('口コミを送信しました！管理者の承認後に掲載されます。');
-document.getElementById('review-form').reset();
+reviewForm.reset();
 formContainer.classList.add('hidden');
 }
 });
+}
 
-// 初期読み込み
 fetchReviews();
+});
 </script>
 
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
