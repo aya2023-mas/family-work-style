@@ -4,196 +4,136 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>会社の家族 - 働きやすさのリアル</title>
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body {
-font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-margin: 0;
-padding: 0;
-color: #1e5338;
-background: linear-gradient(180deg, #f7f9f6 0%, #ffffff 50%);
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-
-.container {
-width: 100%;
-max-width: 480px;
-padding: 40px 20px;
-box-sizing: border-box;
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-
-/* シンプルなラインアートの家アイコン */
-.house-icon {
-width: 90px;
-height: auto;
-margin-bottom: 25px;
-}
-
-.main-title {
-font-size: 28px;
-font-weight: bold;
-margin: 0 0 10px 0;
-letter-spacing: 0.05em;
-color: #1e5338;
-}
-
-.sub-title {
-font-size: 16px;
-line-height: 1.6;
-text-align: center;
-margin: 0 0 20px 0;
-color: #5c7f5d;
-}
-
-.description {
-font-size: 14px;
-line-height: 1.8;
-text-align: center;
-margin: 0 0 35px 0;
-color: #333333;
-/* 単語の途中で不自然に改行されないように設定 */
-word-break: keep-all;
-overflow-wrap: break-word;
-}
-
-.submit-btn {
-background-color: #0f5838;
-color: white;
-border: none;
-border-radius: 25px;
-padding: 12px 30px;
-font-size: 16px;
-font-weight: bold;
-cursor: pointer;
-box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-text-decoration: none;
-display: flex;
-align-items: center;
-gap: 8px;
-}
-
-.search-container {
-background-color: white;
-border-radius: 15px;
-width: 100%;
-padding: 20px;
-box-sizing: border-box;
-box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-margin-top: 30px;
-border: 1px solid #e2ebe0;
-}
-
-.search-title {
-font-size: 16px;
-font-weight: bold;
-margin: 0 0 15px 0;
-color: #5c7f5d;
-display: flex;
-align-items: center;
-gap: 8px;
-}
-
-.search-input-wrapper {
-background-color: #edf4ec;
-border: 1px solid #d9ebd6;
-border-radius: 10px;
-padding: 12px 15px;
-margin-bottom: 10px;
-}
-
-.search-input {
-width: 100%;
-border: none;
-background: transparent;
-font-size: 14px;
-color: #5c7f5d;
-padding: 0;
-outline: none;
-}
-
-.search-input::placeholder {
-color: #8fae90;
-}
-
-.review-count {
-font-size: 12px;
-color: #5c7f5d;
-margin: 0;
-}
-
-.list-title-container {
-width: 100%;
-display: flex;
-align-items: center;
-margin-top: 40px;
-margin-bottom: 20px;
-}
-
-.list-title-mark {
-width: 4px;
-height: 24px;
-background-color: #5c7f5d;
-border-radius: 2px;
-margin-right: 10px;
-}
-
-.list-title {
-font-size: 18px;
-font-weight: bold;
-color: #5c7f5d;
-margin: 0;
-}
+body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f9f9f9; color: #333; }
+.container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+h1, h2 { text-align: center; }
+.submit-btn { display: block; width: 100%; text-align: center; background: #0070f3; color: white; padding: 12px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-bottom: 20px; }
+.form-group { margin-bottom: 15px; }
+label { display: block; font-weight: bold; margin-bottom: 5px; }
+input, textarea, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+.review-card { border-bottom: 1px solid #eee; padding: 15px 0; }
+.review-company { font-weight: bold; font-size: 1.1em; }
+.review-rating { color: #f39c12; }
+.hidden { display: none; }
 </style>
 </head>
 <body>
+
 <div class="container">
-
-<!-- シンプルな緑ラインの家SVG -->
-<svg class="house-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15 45L50 15L85 45" stroke="#1e5338" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M72 35V20H80V42" stroke="#1e5338" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="23" y="45" width="54" height="40" stroke="#1e5338" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="33" y="55" width="12" height="12" stroke="#1e5338" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="55" y="55" width="12" height="12" stroke="#1e5338" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
-<h1 class="main-title">会社の家族</h1>
-
-<p class="sub-title">
-家族目線で知る、<br>
-働きやすさのリアル
+<h1>会社の家族</h1>
+<p style="text-align: center;">働きやすさのリアル</p>
+<p style="text-align: center;" class="description">
+社員本人・ご家族の声から、本当の働きやすさがみえてくる
 </p>
 
-<!-- 改行を固定して綺麗に見せる部分 -->
-<p class="description">
-社員本人・ご家族の声から、本当の働きやすさが<br>みえてくる
-</p>
+<!-- 投稿フォーム切り替えボタン -->
+<button id="toggle-form-btn" style="background-color: #0070f3; margin-bottom: 20px;">✏️ 口コミを投稿する</button>
 
-<a href="#" class="submit-btn">
-✏️ 口コミを投稿する
-</a>
+<!-- 投稿フォーム（初期状態は非表示） -->
+<div id="form-container" class="hidden" style="background: #f0f4f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+<h3>口コミを投稿する</h3>
+<form id="review-form">
+<div class="form-group">
+<label>企業名 *</label>
+<input type="text" id="company_name" required placeholder="例: ○○商事">
+</div>
+<div class="form-group">
+<label>立場 / 職種</label>
+<input type="text" id="position" placeholder="例: 営業部 / 社員の配偶者 など">
+</div>
+<div class="form-group">
+<label>おすすめ度（5段階）</label>
+<select id="rating">
+<option value="5">★★★★★ (5)</option>
+<option value="4">★★★★☆ (4)</option>
+<option value="3">★★★☆☆ (3)</option>
+<option value="2">★★☆☆☆ (2)</option>
+<option value="1">★☆☆☆☆ (1)</option>
+</select>
+</div>
+<div class="form-group">
+<label>口コミ内容 *</label>
+<textarea id="content" rows="4" required placeholder="働きやすさや制度の活用状況について教えてください"></textarea>
+</div>
+<button type="submit">送信する（承認後に掲載されます）</button>
+</form>
+</div>
 
-<div class="search-container">
-<p class="search-title">
-🔍 企業名で口コミを探す
-</p>
-<div class="search-input-wrapper">
-<input type="text" class="search-input" placeholder="例：〇〇商事、IT、製造...">
-</div>
-<p class="review-count">3 件の口コミ</p>
+<h2>口コミ一覧</h2>
+<div id="reviews-list">口コミを読み込み中...</div>
 </div>
 
-<div class="list-title-container">
-<div class="list-title-mark"></div>
-<h2 class="list-title">口コミ一覧</h2>
-</div>
+<script>
+// Supabaseの接続設定
+const SUPABASE_URL = 'https://uzmxuoktvywktrwiumbx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_jymAUZEcLhfk4tMxerrgnw_GOVB99YV';
 
+const supabase = supabaseClient.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// フォームの開閉
+const toggleBtn = document.getElementById('toggle-form-btn');
+const formContainer = document.getElementById('form-container');
+toggleBtn.addEventListener('click', () => {
+formContainer.classList.toggle('hidden');
+});
+
+// 口コミ一覧の取得（承認済み is_approved = true のみ）
+async function fetchReviews() {
+const { data, error } = await supabase
+.from('reviews')
+.select('*')
+.eq('is_approved', true)
+.order('created_at', { ascending: false });
+
+const listDiv = document.getElementById('reviews-list');
+if (error) {
+listDiv.innerHTML = '<p>口コミの読み込みに失敗しました。</p>';
+return;
+}
+
+if (!data || data.length === 0) {
+listDiv.innerHTML = '<p>まだ承認された口コミはありません。</p>';
+return;
+}
+
+listDiv.innerHTML = data.map(r => `
+<div class="review-card">
+<div class="review-company">${r.company_name} <span style="font-size:0.8em; font-weight:normal; color:#666;">(${r.position || '未設定'})</span></div>
+<div class="review-rating">${'★'.repeat(r.rating || 5)}</div>
+<p>${r.content}</p>
 </div>
+`).join('');
+}
+
+// 口コミ投稿フォームの送信処理
+document.getElementById('review-form').addEventListener('submit', async (e) => {
+e.preventDefault();
+const company_name = document.getElementById('company_name').value;
+const position = document.getElementById('position').value;
+const rating = parseInt(document.getElementById('rating').value);
+const content = document.getElementById('content').value;
+
+const { error } = await supabase
+.from('reviews')
+.insert([{ company_name, position, rating, content }]);
+
+if (error) {
+alert('送信に失敗しました: ' + error.message);
+} else {
+alert('口コミを送信しました！管理者の承認後に掲載されます。');
+document.getElementById('review-form').reset();
+formContainer.classList.add('hidden');
+}
+});
+
+// 初期読み込み
+fetchReviews();
+</script>
+
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
