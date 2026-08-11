@@ -140,7 +140,7 @@ font-weight: 500;
 
 .metrics-grid {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
 gap: 10px;
 background: #ffffff;
 padding: 12px;
@@ -170,7 +170,7 @@ border-radius: 0 8px 8px 0;
 <body>
 
 <div class="container">
-<!-- トップイラスト復元部分 -->
+<!-- トップイラスト部分 -->
 <div class="header-illustration">
 <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=800&q=80" alt="家族のイラスト">
 </div>
@@ -190,7 +190,7 @@ border-radius: 0 8px 8px 0;
 <form id="review-form">
 <div class="form-group">
 <label>企業名 *</label>
-<input type="text" id="company_name" required placeholder="例: 日鉄興和不動産">
+<input type="text" id="company_name" required placeholder="例: 〇〇株式会社">
 </div>
 
 <div class="form-group">
@@ -204,11 +204,12 @@ border-radius: 0 8px 8px 0;
 </select>
 </div>
 
+<!-- 子供選択時に非表示にするグループ -->
+<div id="adult-only-fields">
 <div class="form-group">
 <label>役職・階層</label>
 <select id="job_position">
 <option value="">選択してください</option>
-
 <option value="一般社員 / 役職なし">一般社員 / 役職なし</option>
 <option value="主任・係長クラス">主任・係長クラス</option>
 <option value="管理職（課長クラス）">管理職（課長クラス）</option>
@@ -221,8 +222,7 @@ border-radius: 0 8px 8px 0;
 <select id="work_style">
 <option value="">選択してください</option>
 <option value="共働き">共働き</option>
-<option value="専業主婦(夫)">専業主婦(夫)</option>
-<option value="その他">その他</option>
+<option value="片働き（一方が勤務）">片働き（一方が勤務）</option>
 </select>
 </div>
 
@@ -233,6 +233,18 @@ border-radius: 0 8px 8px 0;
 <option value="あり（未就学児）">あり（未就学児）</option>
 <option value="あり（小学生以上）">あり（小学生以上）</option>
 <option value="なし">なし</option>
+</select>
+</div>
+</div>
+
+<div class="form-group">
+<label>通勤時間（会社までの時間）</label>
+<select id="commute_time">
+<option value="">選択してください</option>
+<option value="〜30分">〜30分</option>
+<option value="〜1時間">〜1時間</option>
+<option value="〜1.5時間">〜1.5時間</option>
+<option value="1.5時間以上">1.5時間以上</option>
 </select>
 </div>
 
@@ -299,7 +311,7 @@ border-radius: 0 8px 8px 0;
 <!-- 検索ボックス -->
 <div class="search-container">
 <p class="search-title">🔍 企業名で口コミを探す</p>
-<input type="text" id="search-input" class="search-input" placeholder="例: 日鉄興和不動産、商事...">
+<input type="text" id="search-input" class="search-input" placeholder="例: 〇〇株式会社、製造業...">
 </div>
 
 <h2 class="list-title">口コミ一覧</h2>
@@ -321,6 +333,19 @@ const formContainer = document.getElementById('form-container');
 if (toggleBtn && formContainer) {
 toggleBtn.addEventListener('click', () => {
 formContainer.classList.toggle('hidden');
+});
+}
+
+// 立場選択に応じた非表示切り替え処理
+const positionSelect = document.getElementById('position');
+const adultFields = document.getElementById('adult-only-fields');
+if (positionSelect && adultFields) {
+positionSelect.addEventListener('change', (e) => {
+if (e.target.value === '家族（子供）') {
+adultFields.style.display = 'none';
+} else {
+adultFields.style.display = 'block';
+}
 });
 }
 
@@ -357,6 +382,10 @@ ${tagHtml}
 </div>
 
 <div class="metrics-grid">
+<div class="metric-item">
+<div class="metric-label">通勤時間</div>
+<div class="metric-value highlight">${r.commute_time || '-'}</div>
+</div>
 <div class="metric-item">
 <div class="metric-label">帰宅時間</div>
 <div class="metric-value highlight">${r.return_time || '-'}</div>
@@ -428,11 +457,15 @@ const reviewForm = document.getElementById('review-form');
 if (reviewForm) {
 reviewForm.addEventListener('submit', async (e) => {
 e.preventDefault();
-const company_name = document.getElementById('company_name').value;
 const position = document.getElementById('position').value;
-const job_position = document.getElementById('job_position').value;
-const work_style = document.getElementById('work_style').value;
-const child_status = document.getElementById('child_status').value;
+const company_name = document.getElementById('company_name').value;
+const isChild = (position === '家族（子供）');
+
+const job_position = isChild ? '' : document.getElementById('job_position').value;
+const work_style = isChild ? '' : document.getElementById('work_style').value;
+const child_status = isChild ? '' : document.getElementById('child_status').value;
+
+const commute_time = document.getElementById('commute_time').value;
 const return_time = document.getElementById('return_time').value;
 const fatigue_level = document.getElementById('fatigue_level').value;
 const holiday_contact = document.getElementById('holiday_contact').value;
@@ -451,6 +484,7 @@ const { error } = await supabaseClient
 company_name,
 position,
 job_position,
+commute_time,
 work_style,
 child_status,
 return_time,
@@ -466,6 +500,7 @@ alert('送信に失敗しました: ' + error.message);
 } else {
 alert('口コミを送信しました！管理者の承認後に掲載されます。');
 reviewForm.reset();
+if (adultFields) adultFields.style.display = 'block';
 formContainer.classList.add('hidden');
 }
 });
@@ -478,5 +513,6 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
+
 
 
