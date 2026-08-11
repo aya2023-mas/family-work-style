@@ -15,13 +15,27 @@ background-color: #f4f6f8;
 color: #2c3e50;
 }
 .container {
-max-width: 600px;
+max-width: 650px;
 margin: 0 auto;
 background: #ffffff;
 padding: 24px;
 border-radius: 16px;
 box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+
+/* ヘッダーイラスト用スタイル */
+.header-illustration {
+text-align: center;
+margin-bottom: 12px;
+}
+.header-illustration img {
+max-width: 100%;
+height: auto;
+max-height: 180px;
+border-radius: 12px;
+object-fit: cover;
+}
+
 h1 {
 text-align: center;
 font-size: 24px;
@@ -103,19 +117,64 @@ font-size: 15px;
 font-weight: bold;
 cursor: pointer;
 }
+
+/* カード表示用スタイル */
 .review-card {
-border-bottom: 1px solid #eee;
-padding: 16px 0;
+border: 1px solid #e2e8f0;
+background: #fafbfc;
+border-radius: 12px;
+padding: 18px;
+margin-bottom: 20px;
 }
-.review-company { font-weight: bold; font-size: 16px; }
-.review-info { font-size: 0.85em; font-weight: normal; color: #666; margin-left: 6px; }
-.review-rating { color: #f39c12; margin: 4px 0; }
+.review-company { font-weight: bold; font-size: 18px; color: #2d3748; margin-bottom: 8px; }
+
+.tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tag {
+background: #e2e8f0;
+color: #4a5568;
+padding: 4px 10px;
+border-radius: 15px;
+font-size: 12px;
+font-weight: 500;
+}
+
+.metrics-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+gap: 10px;
+background: #ffffff;
+padding: 12px;
+border-radius: 8px;
+border: 1px solid #edf2f7;
+margin-bottom: 14px;
+}
+.metric-item { text-align: center; }
+.metric-label { font-size: 11px; color: #718096; margin-bottom: 4px; }
+.metric-value { font-size: 13px; font-weight: bold; color: #2d3748; }
+.metric-value.highlight { color: #dd6b20; }
+.metric-value.star { color: #f6ad55; }
+
+.comment-box {
+background: #f7fafc;
+border-left: 3px solid #cbd5e0;
+padding: 12px 14px;
+font-size: 14px;
+line-height: 1.6;
+color: #2d3748;
+border-radius: 0 8px 8px 0;
+}
+
 .hidden { display: none; }
 </style>
 </head>
 <body>
 
 <div class="container">
+<!-- トップイラスト復元部分 -->
+<div class="header-illustration">
+<img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=800&q=80" alt="家族のイラスト">
+</div>
+
 <h1>会社の家族</h1>
 <p class="sub-title">家族目線で知る、働きやすさのリアル</p>
 <p class="description">
@@ -125,52 +184,114 @@ padding: 16px 0;
 <!-- 投稿フォーム切り替えボタン -->
 <button id="toggle-form-btn" class="submit-btn">✏️ 口コミを投稿する</button>
 
-<!-- 投稿フォーム（初期状態は非表示） -->
-<div id="form-container" class="hidden" style="background: #f0f4f8; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+<!-- 投稿フォーム -->
+<div id="form-container" class="hidden" style="background: #f0f4f8; padding: 18px; border-radius: 12px; margin-bottom: 24px;">
 <h3 style="margin-top:0;">口コミを投稿する</h3>
 <form id="review-form">
 <div class="form-group">
 <label>企業名 *</label>
-<input type="text" id="company_name" required placeholder="例: ○○商事">
+<input type="text" id="company_name" required placeholder="例: 日鉄興和不動産">
 </div>
+
 <div class="form-group">
-<label>立場</label>
-<select id="position">
+<label>立場 *</label>
+<select id="position" required>
 <option value="">選択してください</option>
+<option value="家族（配偶者・パートナー）">家族（配偶者・パートナー）</option>
+<option value="家族（子供）">家族（子供）</option>
+<option value="家族（親）">家族（親）</option>
 <option value="社員本人">社員本人</option>
-<option value="社員の配偶者">社員の配偶者</option>
-<option value="社員の子供">社員の子供</option>
-<option value="社員の親">社員の親</option>
-<option value="その他">その他</option>
 </select>
 </div>
+
 <div class="form-group">
-<label>職種</label>
-<select id="job_type">
+<label>役職・階層</label>
+<select id="job_position">
 <option value="">選択してください</option>
-<option value="営業職">営業職</option>
-<option value="事務・企画職">事務・企画職</option>
-<option value="IT・エンジニア">IT・エンジニア</option>
-<option value="サービス・販売">サービス・販売</option>
-<option value="専門職">専門職</option>
-<option value="製造・現場職">製造・現場職</option>
+
+<option value="一般社員 / 役職なし">一般社員 / 役職なし</option>
+<option value="主任・係長クラス">主任・係長クラス</option>
+<option value="管理職（課長クラス）">管理職（課長クラス）</option>
+<option value="幹部・部長以上">幹部・部長以上</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>働き方・家庭状況</label>
+<select id="work_style">
+<option value="">選択してください</option>
+<option value="共働き">共働き</option>
+<option value="専業主婦(夫)">専業主婦(夫)</option>
 <option value="その他">その他</option>
 </select>
 </div>
+
 <div class="form-group">
-<label>おすすめ度（5段階）</label>
-<select id="rating">
-<option value="5">★★★★★ (5)</option>
-<option value="4">★★★★☆ (4)</option>
-<option value="3">★★★☆☆ (3)</option>
-<option value="2">★★☆☆☆ (2)</option>
-<option value="1">★☆☆☆☆ (1)</option>
+<label>お子様の有無</label>
+<select id="child_status">
+<option value="">選択してください</option>
+<option value="あり（未就学児）">あり（未就学児）</option>
+<option value="あり（小学生以上）">あり（小学生以上）</option>
+<option value="なし">なし</option>
 </select>
 </div>
+
 <div class="form-group">
-<label>口コミ内容 *</label>
-<textarea id="content" rows="4" required placeholder="働きやすさや制度の活用状況について教えてください"></textarea>
+<label>平均帰宅時間</label>
+<select id="return_time">
+<option value="〜18:00">〜18:00</option>
+<option value="〜19:00" selected>〜19:00</option>
+<option value="〜20:00">〜20:00</option>
+<option value="〜21:00">〜21:00</option>
+<option value="22:00以降">22:00以降</option>
+</select>
 </div>
+
+<div class="form-group">
+<label>疲労度（5段階）</label>
+<select id="fatigue_level">
+<option value="3">★★★☆☆ 3 (標準)</option>
+<option value="5">★★★★★ 5 (かなり疲れている)</option>
+<option value="4">★★★★☆ 4</option>
+<option value="2">★★☆☆☆ 2</option>
+<option value="1">★☆☆☆☆ 1 (ほぼ疲れていない)</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>休日連絡</label>
+<select id="holiday_contact">
+<option value="なし">なし</option>
+<option value="たまにある">たまにある</option>
+<option value="よくある">よくある</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>休日出勤</label>
+<select id="holiday_work">
+<option value="なし">なし</option>
+<option value="たまにある">たまにある</option>
+<option value="よくある">よくある</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>福利厚生（5段階）</label>
+<select id="welfare_rating">
+<option value="5">★★★★★ 5 (とても満足)</option>
+<option value="4">★★★★☆ 4</option>
+<option value="3">★★★☆☆ 3</option>
+<option value="2">★★☆☆☆ 2</option>
+<option value="1">★☆☆☆☆ 1</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>口コミ・感想 *</label>
+<textarea id="content" rows="4" required placeholder="出張の頻度、休みの取りやすさ、収入、家庭への影響などのリアルな感想を教えてください"></textarea>
+</div>
+
 <button type="submit" class="send-btn">送信する（承認後に掲載されます）</button>
 </form>
 </div>
@@ -178,7 +299,7 @@ padding: 16px 0;
 <!-- 検索ボックス -->
 <div class="search-container">
 <p class="search-title">🔍 企業名で口コミを探す</p>
-<input type="text" id="search-input" class="search-input" placeholder="例: ○○商事、IT、製造...">
+<input type="text" id="search-input" class="search-input" placeholder="例: 日鉄興和不動産、商事...">
 </div>
 
 <h2 class="list-title">口コミ一覧</h2>
@@ -203,7 +324,7 @@ formContainer.classList.toggle('hidden');
 });
 }
 
-// 口口コミ表示用関数
+// 口コミカード描画
 function renderReviews(reviews) {
 const listDiv = document.getElementById('reviews-list');
 if (!listDiv) return;
@@ -214,22 +335,59 @@ return;
 }
 
 listDiv.innerHTML = reviews.map(r => {
-const infoParts = [];
-if (r.position) infoParts.push(r.position);
-if (r.job_type) infoParts.push(r.job_type);
-const infoStr = infoParts.length > 0 ? `(${infoParts.join(' / ')})` : '';
+// タグ生成
+const tags = [];
+if (r.position) tags.push(r.position);
+if (r.job_position) tags.push(r.job_position);
+if (r.work_style) tags.push(r.work_style);
+if (r.child_status) tags.push(r.child_status);
+
+const tagHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+// 星表記
+const fatigueStars = r.fatigue_level ? '★'.repeat(parseInt(r.fatigue_level)) + '☆'.repeat(5 - parseInt(r.fatigue_level)) + ' ' + r.fatigue_level : '-';
+const welfareStars = r.welfare_rating ? '★'.repeat(parseInt(r.welfare_rating)) + '☆'.repeat(5 - parseInt(r.welfare_rating)) + ' ' + r.welfare_rating : '-';
 
 return `
 <div class="review-card">
-<div class="review-company">${r.company_name} <span class="review-info">${infoStr}</span></div>
-<div class="review-rating">${'★'.repeat(r.rating || 5)}</div>
-<p style="margin: 8px 0 0 0; line-height: 1.5;">${r.content}</p>
+<div class="review-company">${r.company_name}</div>
+
+<div class="tag-container">
+${tagHtml}
+</div>
+
+<div class="metrics-grid">
+<div class="metric-item">
+<div class="metric-label">帰宅時間</div>
+<div class="metric-value highlight">${r.return_time || '-'}</div>
+</div>
+<div class="metric-item">
+<div class="metric-label">疲労度</div>
+<div class="metric-value star">${fatigueStars}</div>
+</div>
+<div class="metric-item">
+<div class="metric-label">休日連絡</div>
+<div class="metric-value highlight">${r.holiday_contact || '-'}</div>
+</div>
+<div class="metric-item">
+<div class="metric-label">休日出勤</div>
+<div class="metric-value highlight">${r.holiday_work || '-'}</div>
+</div>
+<div class="metric-item">
+<div class="metric-label">福利厚生</div>
+<div class="metric-value star">${welfareStars}</div>
+</div>
+</div>
+
+<div class="comment-box">
+「${r.content || ''}」
+</div>
 </div>
 `;
 }).join('');
 }
 
-// 口口コミ一覧の取得
+// 口コミ一覧の取得
 async function fetchReviews() {
 const listDiv = document.getElementById('reviews-list');
 if (!supabaseClient) {
@@ -257,23 +415,29 @@ const searchInput = document.getElementById('search-input');
 if (searchInput) {
 searchInput.addEventListener('input', (e) => {
 const keyword = e.target.value.toLowerCase();
-const filtered = allReviews.filter(r =>
-(r.company_name && r.company_name.toLowerCase().includes(keyword)) ||
-(r.content && r.content.toLowerCase().includes(keyword))
-);
+const filtered = allReviews.filter(r => {
+const text = [r.company_name, r.content, r.position, r.job_position, r.work_style].filter(Boolean).join(' ').toLowerCase();
+return text.includes(keyword);
+});
 renderReviews(filtered);
 });
 }
 
-// 投稿送信処理
+// 投稿処理
 const reviewForm = document.getElementById('review-form');
 if (reviewForm) {
 reviewForm.addEventListener('submit', async (e) => {
 e.preventDefault();
 const company_name = document.getElementById('company_name').value;
 const position = document.getElementById('position').value;
-const job_type = document.getElementById('job_type').value;
-const rating = parseInt(document.getElementById('rating').value);
+const job_position = document.getElementById('job_position').value;
+const work_style = document.getElementById('work_style').value;
+const child_status = document.getElementById('child_status').value;
+const return_time = document.getElementById('return_time').value;
+const fatigue_level = document.getElementById('fatigue_level').value;
+const holiday_contact = document.getElementById('holiday_contact').value;
+const holiday_work = document.getElementById('holiday_work').value;
+const welfare_rating = document.getElementById('welfare_rating').value;
 const content = document.getElementById('content').value;
 
 if (!supabaseClient) {
@@ -283,7 +447,19 @@ return;
 
 const { error } = await supabaseClient
 .from('reviews')
-.insert([{ company_name, position, job_type, rating, content }]);
+.insert([{
+company_name,
+position,
+job_position,
+work_style,
+child_status,
+return_time,
+fatigue_level,
+holiday_contact,
+holiday_work,
+welfare_rating,
+content
+}]);
 
 if (error) {
 alert('送信に失敗しました: ' + error.message);
@@ -302,6 +478,5 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
 
 
