@@ -23,19 +23,6 @@ border-radius: 16px;
 box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* ヘッダーイラスト用スタイル */
-.header-illustration {
-text-align: center;
-margin-bottom: 12px;
-}
-.header-illustration img {
-max-width: 100%;
-height: auto;
-max-height: 180px;
-border-radius: 12px;
-object-fit: cover;
-}
-
 h1 {
 text-align: center;
 font-size: 24px;
@@ -106,6 +93,21 @@ border: 1px solid #ccc;
 border-radius: 8px;
 font-size: 14px;
 }
+.checkbox-group {
+display: flex;
+align-items: flex-start;
+gap: 8px;
+font-size: 13px;
+color: #4a5568;
+margin-top: 15px;
+margin-bottom: 15px;
+}
+.checkbox-group input {
+width: 16px;
+height: 16px;
+margin-top: 2px;
+cursor: pointer;
+}
 .send-btn {
 width: 100%;
 padding: 12px;
@@ -162,6 +164,17 @@ font-size: 14px;
 line-height: 1.6;
 color: #2d3748;
 border-radius: 0 8px 8px 0;
+margin-top: 8px;
+}
+.welfare-comment-box {
+background: #fff8f0;
+border-left: 3px solid #dd6b20;
+padding: 10px 12px;
+font-size: 13px;
+line-height: 1.5;
+color: #4a5568;
+border-radius: 0 8px 8px 0;
+margin-top: 8px;
 }
 
 .hidden { display: none; }
@@ -170,11 +183,6 @@ border-radius: 0 8px 8px 0;
 <body>
 
 <div class="container">
-<!-- トップイラスト部分 -->
-<div class="header-illustration">
-<img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=800&q=80" alt="家族のイラスト">
-</div>
-
 <h1>会社の家族</h1>
 <p class="sub-title">家族目線で知る、働きやすさのリアル</p>
 <p class="description">
@@ -249,6 +257,17 @@ border-radius: 0 8px 8px 0;
 </div>
 
 <div class="form-group">
+<label>月の残業時間</label>
+<select id="overtime_hours">
+<option value="">選択してください</option>
+<option value="〜10時間">〜10時間</option>
+<option value="〜20時間">〜20時間</option>
+<option value="〜30時間">〜30時間</option>
+<option value="40時間以上">40時間以上</option>
+</select>
+</div>
+
+<div class="form-group">
 <label>平均帰宅時間</label>
 <select id="return_time">
 <option value="〜18:00">〜18:00</option>
@@ -260,10 +279,21 @@ border-radius: 0 8px 8px 0;
 </div>
 
 <div class="form-group">
+<label>休みのとりやすさ（5段階）</label>
+<select id="leave_easiness">
+<option value="3">★★★☆☆ 3 (標準)</option>
+<option value="5">★★★★★ 5 (とても取りやすい)</option>
+<option value="4">★★★★☆ 4</option>
+<option value="2">★★☆☆☆ 2</option>
+<option value="1">★☆☆☆☆ 1 (ほとんど取れない)</option>
+</select>
+</div>
+
+<div class="form-group">
 <label>疲労度（5段階）</label>
 <select id="fatigue_level">
 <option value="3">★★★☆☆ 3 (標準)</option>
-<option value="5">★★★★★ 5 (かなり疲れている)</option>
+<option value="5">★★★★★ 5 (ずっと寝ている)</option>
 <option value="4">★★★★☆ 4</option>
 <option value="2">★★☆☆☆ 2</option>
 <option value="1">★☆☆☆☆ 1 (ほぼ疲れていない)</option>
@@ -300,8 +330,21 @@ border-radius: 0 8px 8px 0;
 </div>
 
 <div class="form-group">
+<label>福利厚生の詳細・理由</label>
+<input type="text" id="welfare_comment" placeholder="例: 住宅手当が厚い、育休復帰率が高い、予防接種補助など">
+</div>
+
+<div class="form-group">
 <label>口コミ・感想 *</label>
-<textarea id="content" rows="4" required placeholder="出張の頻度、休みの取りやすさ、収入、家庭への影響などのリアルな感想を教えてください"></textarea>
+<textarea id="content" rows="4" required placeholder="出張の頻度、家庭への影響などのリアルな感想を教えてください"></textarea>
+</div>
+
+<!-- 信ぴょう性担保のチェックボックス -->
+<div class="checkbox-group">
+<input type="checkbox" id="verify_authenticity" required>
+<label for="verify_authenticity" style="display:inline; font-weight:normal; margin:0;">
+社員もしくは家族であり、誹謗中傷目的の投稿ではないことを確認しました *
+</label>
 </div>
 
 <button type="submit" class="send-btn">送信する（承認後に掲載されます）</button>
@@ -371,6 +414,7 @@ const tagHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
 
 // 星表記
 const fatigueStars = r.fatigue_level ? '★'.repeat(parseInt(r.fatigue_level)) + '☆'.repeat(5 - parseInt(r.fatigue_level)) + ' ' + r.fatigue_level : '-';
+const leaveStars = r.leave_easiness ? '★'.repeat(parseInt(r.leave_easiness)) + '☆'.repeat(5 - parseInt(r.leave_easiness)) + ' ' + r.leave_easiness : '-';
 const welfareStars = r.welfare_rating ? '★'.repeat(parseInt(r.welfare_rating)) + '☆'.repeat(5 - parseInt(r.welfare_rating)) + ' ' + r.welfare_rating : '-';
 
 return `
@@ -387,8 +431,16 @@ ${tagHtml}
 <div class="metric-value highlight">${r.commute_time || '-'}</div>
 </div>
 <div class="metric-item">
+<div class="metric-label">月残業</div>
+<div class="metric-value highlight">${r.overtime_hours || '-'}</div>
+</div>
+<div class="metric-item">
 <div class="metric-label">帰宅時間</div>
 <div class="metric-value highlight">${r.return_time || '-'}</div>
+</div>
+<div class="metric-item">
+<div class="metric-label">休みの取りやすさ</div>
+<div class="metric-value star">${leaveStars}</div>
 </div>
 <div class="metric-item">
 <div class="metric-label">疲労度</div>
@@ -407,6 +459,8 @@ ${tagHtml}
 <div class="metric-value star">${welfareStars}</div>
 </div>
 </div>
+
+${r.welfare_comment ? `<div class="welfare-comment-box">🎁 福利厚生メモ: ${r.welfare_comment}</div>` : ''}
 
 <div class="comment-box">
 「${r.content || ''}」
@@ -445,7 +499,7 @@ if (searchInput) {
 searchInput.addEventListener('input', (e) => {
 const keyword = e.target.value.toLowerCase();
 const filtered = allReviews.filter(r => {
-const text = [r.company_name, r.content, r.position, r.job_position, r.work_style].filter(Boolean).join(' ').toLowerCase();
+const text = [r.company_name, r.content, r.position, r.job_position, r.work_style, r.welfare_comment].filter(Boolean).join(' ').toLowerCase();
 return text.includes(keyword);
 });
 renderReviews(filtered);
@@ -466,11 +520,14 @@ const work_style = isChild ? '' : document.getElementById('work_style').value;
 const child_status = isChild ? '' : document.getElementById('child_status').value;
 
 const commute_time = document.getElementById('commute_time').value;
+const overtime_hours = document.getElementById('overtime_hours').value;
 const return_time = document.getElementById('return_time').value;
+const leave_easiness = document.getElementById('leave_easiness').value;
 const fatigue_level = document.getElementById('fatigue_level').value;
 const holiday_contact = document.getElementById('holiday_contact').value;
 const holiday_work = document.getElementById('holiday_work').value;
 const welfare_rating = document.getElementById('welfare_rating').value;
+const welfare_comment = document.getElementById('welfare_comment').value;
 const content = document.getElementById('content').value;
 
 if (!supabaseClient) {
@@ -485,13 +542,16 @@ company_name,
 position,
 job_position,
 commute_time,
+overtime_hours,
 work_style,
 child_status,
 return_time,
+leave_easiness,
 fatigue_level,
 holiday_contact,
 holiday_work,
 welfare_rating,
+welfare_comment,
 content
 }]);
 
@@ -513,6 +573,5 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
 
 
