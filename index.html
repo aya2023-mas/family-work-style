@@ -1,5 +1,278 @@
-ment.getElementById('company_name').value;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会社の家族 - 働きやすさのリアル</title>
+<!-- Supabase JS Library -->
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+margin: 0;
+padding: 20px;
+background-color: #f4f6f8;
+color: #2c3e50;
+}
+.container {
+max-width: 600px;
+margin: 0 auto;
+background: #ffffff;
+padding: 24px;
+border-radius: 16px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+h1 {
+text-align: center;
+font-size: 24px;
+margin-bottom: 8px;
+}
+.sub-title {
+text-align: center;
+color: #666;
+font-size: 14px;
+margin-top: 0;
+}
+.description {
+text-align: center;
+font-size: 14px;
+color: #555;
+margin-bottom: 24px;
+line-height: 1.6;
+}
+.submit-btn {
+display: block;
+width: 100%;
+background: #107c41;
+color: white;
+padding: 14px;
+text-align: center;
+border: none;
+border-radius: 25px;
+font-weight: bold;
+font-size: 16px;
+cursor: pointer;
+margin-bottom: 24px;
+box-shadow: 0 2px 6px rgba(16, 124, 65, 0.2);
+}
+.search-container {
+background: #eef5f0;
+padding: 16px;
+border-radius: 12px;
+margin-bottom: 24px;
+}
+.search-title {
+font-weight: bold;
+margin-top: 0;
+margin-bottom: 8px;
+font-size: 14px;
+color: #107c41;
+}
+.search-input {
+width: 100%;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 8px;
+box-sizing: border-box;
+font-size: 14px;
+}
+.list-title {
+font-size: 18px;
+border-left: 4px solid #107c41;
+padding-left: 8px;
+margin-bottom: 16px;
+}
+.form-group { margin-bottom: 15px; }
+label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+input[type="text"], textarea, select {
+width: 100%;
+padding: 10px;
+box-sizing: border-box;
+border: 1px solid #ccc;
+border-radius: 8px;
+font-size: 14px;
+}
+.send-btn {
+width: 100%;
+padding: 12px;
+background: #107c41;
+color: white;
+border: none;
+border-radius: 8px;
+font-size: 15px;
+font-weight: bold;
+cursor: pointer;
+}
+.review-card {
+border-bottom: 1px solid #eee;
+padding: 16px 0;
+}
+.review-company { font-weight: bold; font-size: 16px; }
+.review-info { font-size: 0.85em; font-weight: normal; color: #666; margin-left: 6px; }
+.review-rating { color: #f39c12; margin: 4px 0; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>会社の家族</h1>
+<p class="sub-title">家族目線で知る、働きやすさのリアル</p>
+<p class="description">
+社員本人・ご家族の声から、本当の働きやすさがみえてくる
+</p>
+
+<!-- 投稿フォーム切り替えボタン -->
+<button id="toggle-form-btn" class="submit-btn">✏️ 口コミを投稿する</button>
+
+<!-- 投稿フォーム（初期状態は非表示） -->
+<div id="form-container" class="hidden" style="background: #f0f4f8; padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+<h3 style="margin-top:0;">口コミを投稿する</h3>
+<form id="review-form">
+<div class="form-group">
+<label>企業名 *</label>
+<input type="text" id="company_name" required placeholder="例: ○○商事">
+</div>
+<div class="form-group">
+<label>立場</label>
+<select id="position">
+<option value="">選択してください</option>
+<option value="社員本人">社員本人</option>
+<option value="社員の配偶者">社員の配偶者</option>
+<option value="社員の子供">社員の子供</option>
+<option value="社員の親">社員の親</option>
+<option value="その他">その他</option>
+</select>
+</div>
+<div class="form-group">
+<label>職種</label>
+<select id="job_type">
+<option value="">選択してください</option>
+<option value="営業職">営業職</option>
+<option value="事務・企画職">事務・企画職</option>
+<option value="IT・エンジニア">IT・エンジニア</option>
+<option value="サービス・販売">サービス・販売</option>
+<option value="専門職">専門職</option>
+<option value="製造・現場職">製造・現場職</option>
+<option value="その他">その他</option>
+</select>
+</div>
+<div class="form-group">
+<label>おすすめ度（5段階）</label>
+<select id="rating">
+<option value="5">★★★★★ (5)</option>
+<option value="4">★★★★☆ (4)</option>
+<option value="3">★★★☆☆ (3)</option>
+<option value="2">★★☆☆☆ (2)</option>
+<option value="1">★☆☆☆☆ (1)</option>
+</select>
+</div>
+<div class="form-group">
+<label>口コミ内容 *</label>
+<textarea id="content" rows="4" required placeholder="働きやすさや制度の活用状況について教えてください"></textarea>
+</div>
+<button type="submit" class="send-btn">送信する（承認後に掲載されます）</button>
+</form>
+</div>
+
+<!-- 検索ボックス -->
+<div class="search-container">
+<p class="search-title">🔍 企業名で口コミを探す</p>
+<input type="text" id="search-input" class="search-input" placeholder="例: ○○商事、IT、製造...">
+</div>
+
+<h2 class="list-title">口コミ一覧</h2>
+<div id="reviews-list">口コミを読み込み中...</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const SUPABASE_URL = 'https://uzmxuoktvywktrwiumbx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_jymAUZEcLhfk4tMxerrgnw_GOVB99YV';
+
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+let allReviews = [];
+
+// フォームの開閉
+const toggleBtn = document.getElementById('toggle-form-btn');
+const formContainer = document.getElementById('form-container');
+if (toggleBtn && formContainer) {
+toggleBtn.addEventListener('click', () => {
+formContainer.classList.toggle('hidden');
+});
+}
+
+// 口口コミ表示用関数
+function renderReviews(reviews) {
+const listDiv = document.getElementById('reviews-list');
+if (!listDiv) return;
+
+if (reviews.length === 0) {
+listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
+return;
+}
+
+listDiv.innerHTML = reviews.map(r => {
+const infoParts = [];
+if (r.position) infoParts.push(r.position);
+if (r.job_type) infoParts.push(r.job_type);
+const infoStr = infoParts.length > 0 ? `(${infoParts.join(' / ')})` : '';
+
+return `
+<div class="review-card">
+<div class="review-company">${r.company_name} <span class="review-info">${infoStr}</span></div>
+<div class="review-rating">${'★'.repeat(r.rating || 5)}</div>
+<p style="margin: 8px 0 0 0; line-height: 1.5;">${r.content}</p>
+</div>
+`;
+}).join('');
+}
+
+// 口口コミ一覧の取得
+async function fetchReviews() {
+const listDiv = document.getElementById('reviews-list');
+if (!supabaseClient) {
+if (listDiv) listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
+return;
+}
+
+const { data, error } = await supabaseClient
+.from('reviews')
+.select('*')
+.eq('is_approved', true)
+.order('created_at', { ascending: false });
+
+if (error || !data) {
+if (listDiv) listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
+return;
+}
+
+allReviews = data;
+renderReviews(allReviews);
+}
+
+// 検索機能
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+searchInput.addEventListener('input', (e) => {
+const keyword = e.target.value.toLowerCase();
+const filtered = allReviews.filter(r =>
+(r.company_name && r.company_name.toLowerCase().includes(keyword)) ||
+(r.content && r.content.toLowerCase().includes(keyword))
+);
+renderReviews(filtered);
+});
+}
+
+// 投稿送信処理
+const reviewForm = document.getElementById('review-form');
+if (reviewForm) {
+reviewForm.addEventListener('submit', async (e) => {
+e.preventDefault();
+const company_name = document.getElementById('company_name').value;
 const position = document.getElementById('position').value;
+const job_type = document.getElementById('job_type').value;
 const rating = parseInt(document.getElementById('rating').value);
 const content = document.getElementById('content').value;
 
@@ -10,7 +283,7 @@ return;
 
 const { error } = await supabaseClient
 .from('reviews')
-.insert([{ company_name, position, rating, content }]);
+.insert([{ company_name, position, job_type, rating, content }]);
 
 if (error) {
 alert('送信に失敗しました: ' + error.message);
@@ -29,8 +302,6 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
-
 
 
 
