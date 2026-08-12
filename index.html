@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>会社の家族 - 働きやすさのリアル</title>
-<!-- Supabase JS Library -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
 body {
@@ -22,184 +21,46 @@ padding: 24px;
 border-radius: 16px;
 box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-
-h1 {
-text-align: center;
-font-size: 24px;
-margin-bottom: 8px;
-}
-.sub-title {
-text-align: center;
-color: #666;
-font-size: 14px;
-margin-top: 0;
-}
-.description {
-text-align: center;
-font-size: 14px;
-color: #555;
-margin-bottom: 24px;
-line-height: 1.6;
-}
+h1 { text-align: center; font-size: 24px; margin-bottom: 8px; }
+.sub-title { text-align: center; color: #666; font-size: 14px; margin-top: 0; }
+.description { text-align: center; font-size: 14px; color: #555; margin-bottom: 24px; line-height: 1.6; }
 .submit-btn {
-display: block;
-width: 100%;
-background: #107c41;
-color: white;
-padding: 14px;
-text-align: center;
-border: none;
-border-radius: 25px;
-font-weight: bold;
-font-size: 16px;
-cursor: pointer;
-margin-bottom: 24px;
-box-shadow: 0 2px 6px rgba(16, 124, 65, 0.2);
+display: block; width: 100%; background: #107c41; color: white; padding: 14px;
+text-align: center; border: none; border-radius: 25px; font-weight: bold; font-size: 16px;
+cursor: pointer; margin-bottom: 24px; box-shadow: 0 2px 6px rgba(16, 124, 65, 0.2);
 }
-.search-container {
-background: #eef5f0;
-padding: 16px;
-border-radius: 12px;
-margin-bottom: 24px;
-}
-.search-title {
-font-weight: bold;
-margin-top: 0;
-margin-bottom: 8px;
-font-size: 14px;
-color: #107c41;
-}
-.search-input {
-width: 100%;
-padding: 10px;
-border: 1px solid #ccc;
-border-radius: 8px;
-box-sizing: border-box;
-font-size: 14px;
-}
-.list-title {
-font-size: 18px;
-border-left: 4px solid #107c41;
-padding-left: 8px;
-margin-bottom: 16px;
-}
+.search-container { background: #eef5f0; padding: 16px; border-radius: 12px; margin-bottom: 24px; }
+.search-title { font-weight: bold; margin-top: 0; margin-bottom: 8px; font-size: 14px; color: #107c41; }
+.search-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+.list-title { font-size: 18px; border-left: 4px solid #107c41; padding-left: 8px; margin-bottom: 16px; }
 .form-group { margin-bottom: 15px; }
 label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
 input[type="text"], textarea, select {
-width: 100%;
-padding: 10px;
-box-sizing: border-box;
-border: 1px solid #ccc;
-border-radius: 8px;
-font-size: 14px;
+width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
 }
-
-/* 四角枠で囲んだチェックボックス */
 .checkbox-box {
-border: 2px solid #cbd5e0;
-background-color: #ffffff;
-padding: 12px 14px;
-border-radius: 8px;
-margin-top: 20px;
-margin-bottom: 20px;
-display: flex;
-align-items: flex-start;
-gap: 10px;
+border: 2px solid #cbd5e0; background-color: #ffffff; padding: 12px 14px; border-radius: 8px;
+margin-top: 20px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px;
 }
-.checkbox-box input[type="checkbox"] {
-width: 18px;
-height: 18px;
-margin-top: 2px;
-cursor: pointer;
-}
-.checkbox-box label {
-font-weight: normal;
-font-size: 13px;
-color: #2d3748;
-line-height: 1.5;
-margin: 0;
-cursor: pointer;
-}
-
-.send-btn {
-width: 100%;
-padding: 12px;
-background: #107c41;
-color: white;
-border: none;
-border-radius: 8px;
-font-size: 15px;
-font-weight: bold;
-cursor: pointer;
-}
-
-/* カード表示用スタイル */
-.review-card {
-border: 1px solid #e2e8f0;
-background: #fafbfc;
-border-radius: 12px;
-padding: 18px;
-margin-bottom: 20px;
-}
+.checkbox-box input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; cursor: pointer; }
+.checkbox-box label { font-weight: normal; font-size: 13px; color: #2d3748; line-height: 1.5; margin: 0; cursor: pointer; }
+.send-btn { width: 100%; padding: 12px; background: #107c41; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; }
+.review-card { border: 1px solid #e2e8f0; background: #fafbfc; border-radius: 12px; padding: 18px; margin-bottom: 20px; }
 .review-company { font-weight: bold; font-size: 18px; color: #2d3748; margin-bottom: 8px; }
-
 .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.tag {
-background: #e2e8f0;
-color: #4a5568;
-padding: 4px 10px;
-border-radius: 15px;
-font-size: 12px;
-font-weight: 500;
-}
-
+.tag { background: #e2e8f0; color: #4a5568; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 500; }
 .metrics-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-gap: 10px;
-background: #ffffff;
-padding: 12px;
-border-radius: 8px;
-border: 1px solid #edf2f7;
-margin-bottom: 14px;
+display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px;
+background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f7; margin-bottom: 14px;
 }
 .metric-item { text-align: center; }
 .metric-label { font-size: 11px; color: #718096; margin-bottom: 4px; }
 .metric-value { font-size: 13px; font-weight: bold; color: #2d3748; }
 .metric-value.highlight { color: #dd6b20; }
 .metric-value.star { color: #f6ad55; }
-
-.good-point-box {
-background: #f0fff4;
-border-left: 3px solid #38a169;
-padding: 12px 14px;
-font-size: 14px;
-line-height: 1.6;
-color: #2d3748;
-border-radius: 0 8px 8px 0;
-margin-top: 8px;
-}
-.bad-point-box {
-background: #fff5f5;
-border-left: 3px solid #e53e3e;
-padding: 12px 14px;
-font-size: 14px;
-line-height: 1.6;
-color: #2d3748;
-border-radius: 0 8px 8px 0;
-margin-top: 8px;
-}
-.welfare-comment-box {
-background: #fff8f0;
-border-left: 3px solid #dd6b20;
-padding: 10px 12px;
-font-size: 13px;
-line-height: 1.5;
-color: #4a5568;
-border-radius: 0 8px 8px 0;
-margin-top: 8px;
-}
-
+.good-point-box { background: #f0fff4; border-left: 3px solid #38a169; padding: 12px 14px; font-size: 14px; line-height: 1.6; color: #2d3748; border-radius: 0 8px 8px 0; margin-top: 8px; }
+.bad-point-box { background: #fff5f5; border-left: 3px solid #e53e3e; padding: 12px 14px; font-size: 14px; line-height: 1.6; color: #2d3748; border-radius: 0 8px 8px 0; margin-top: 8px; }
+.welfare-comment-box { background: #fff8f0; border-left: 3px solid #dd6b20; padding: 10px 12px; font-size: 13px; line-height: 1.5; color: #4a5568; border-radius: 0 8px 8px 0; margin-top: 8px; }
 .hidden { display: none; }
 </style>
 </head>
@@ -208,14 +69,10 @@ margin-top: 8px;
 <div class="container">
 <h1>会社の家族</h1>
 <p class="sub-title">家族目線で知る、働きやすさのリアル</p>
-<p class="description">
-社員本人・ご家族の声から、本当の働きやすさがみえてくる
-</p>
+<p class="description">社員本人・ご家族の声から、本当の働きやすさがみえてくる</p>
 
-<!-- 投稿フォーム切り替えボタン -->
 <button id="toggle-form-btn" class="submit-btn">✏️ 口コミを投稿する</button>
 
-<!-- 投稿フォーム -->
 <div id="form-container" class="hidden" style="background: #f0f4f8; padding: 18px; border-radius: 12px; margin-bottom: 24px;">
 <h3 style="margin-top:0;">口コミを投稿する</h3>
 <form id="review-form">
@@ -235,7 +92,6 @@ margin-top: 8px;
 </select>
 </div>
 
-<!-- 子供選択時に非表示にするグループ -->
 <div id="adult-only-fields">
 <div class="form-group">
 <label>役職・階層</label>
@@ -253,9 +109,22 @@ margin-top: 8px;
 <select id="work_schedule">
 <option value="">選択してください</option>
 <option value="固定時間制（日勤）">固定時間制（日勤）</option>
+<option value="時短勤務（短時間勤務制度）">時短勤務（短時間勤務制度）</option>
 <option value="シフト制（不規則・交代制）">シフト制（不規則・交代制）</option>
 <option value="フレックスタイム制">フレックスタイム制</option>
 <option value="裁量労働制">裁量労働制</option>
+</select>
+</div>
+
+<div class="form-group hidden" id="jitan-field-group">
+<label>時短勤務の実態（退社・帰宅状況）</label>
+<select id="jitankinmu_style">
+<option value="">選択してください</option>
+<option value="ほぼ規定通りに退社できる">ほぼ規定通りに退社できる</option>
+<option value="たまに15〜30分程度の残業が発生する">たまに15〜30分程度の残業が発生する</option>
+<option value="頻繁に30分〜1時間以上の残業が発生する">頻繁に30分〜1時間以上の残業が発生する</option>
+<option value="業務量が多く実質フルタイム並みに働いている">業務量が多く実質フルタイム並みに働いている</option>
+<option value="日や部署の状況によりかなり変動する">日や部署の状況によりかなり変動する</option>
 </select>
 </div>
 
@@ -301,7 +170,6 @@ margin-top: 8px;
 </select>
 </div>
 
-<!-- 社員本人のみ表示する残業時間グループ -->
 <div class="form-group hidden" id="overtime-field-group">
 <label>月の残業時間</label>
 <select id="overtime_hours">
@@ -326,7 +194,7 @@ margin-top: 8px;
 </div>
 
 <div class="form-group">
-<label>休みのとりやすさ（5段階）</label>
+<label>有休のとりやすさ（5段階）</label>
 <select id="leave_easiness">
 <option value="3">★★★☆☆ 3 (標準)</option>
 <option value="5">★★★★★ 5 (とても取りやすい)</option>
@@ -337,7 +205,6 @@ margin-top: 8px;
 </div>
 
 <div class="form-group">
-<!-- 立場によってラベルテキストを動的に変更 -->
 <label id="fatigue_label">休日の疲れの残り方（5段階）</label>
 <select id="fatigue_level">
 <option value="3">★★★☆☆ 3 (標準)</option>
@@ -392,7 +259,6 @@ margin-top: 8px;
 <textarea id="bad_points" rows="3" placeholder="急な出張が多い、休日もメールが入る、給与が上がりにくい等"></textarea>
 </div>
 
-<!-- 四角枠で囲んだチェックボックス -->
 <div class="checkbox-box">
 <input type="checkbox" id="verify_authenticity" required>
 <label for="verify_authenticity">
@@ -404,7 +270,6 @@ margin-top: 8px;
 </form>
 </div>
 
-<!-- 検索ボックス -->
 <div class="search-container">
 <p class="search-title">🔍 企業名で口コミを探す</p>
 <input type="text" id="search-input" class="search-input" placeholder="例: 〇〇株式会社、製造業...">
@@ -423,7 +288,6 @@ const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_U
 
 let allReviews = [];
 
-// フォームの開閉
 const toggleBtn = document.getElementById('toggle-form-btn');
 const formContainer = document.getElementById('form-container');
 if (toggleBtn && formContainer) {
@@ -432,7 +296,6 @@ formContainer.classList.toggle('hidden');
 });
 }
 
-// 立場選択に応じた表示切り替え処理
 const positionSelect = document.getElementById('position');
 const adultFields = document.getElementById('adult-only-fields');
 const overtimeGroup = document.getElementById('overtime-field-group');
@@ -440,11 +303,26 @@ const fatigueLabel = document.getElementById('fatigue_label');
 const goodPoints = document.getElementById('good_points');
 const badPoints = document.getElementById('bad_points');
 
+const workScheduleSelect = document.getElementById('work_schedule');
+const jitanGroup = document.getElementById('jitan-field-group');
+
+if (workScheduleSelect) {
+workScheduleSelect.addEventListener('change', (e) => {
+if (e.target.value === '時短勤務（短時間勤務制度）') {
+if (jitanGroup) jitanGroup.classList.remove('hidden');
+} else {
+if (jitanGroup) {
+jitanGroup.classList.add('hidden');
+document.getElementById('jitankinmu_style').value = '';
+}
+}
+});
+}
+
 if (positionSelect) {
 positionSelect.addEventListener('change', (e) => {
 const val = e.target.value;
 
-// 子供用制御
 if (val === '家族（子供）') {
 if (adultFields) adultFields.classList.add('hidden');
 if (goodPoints) goodPoints.placeholder = '例: 一緒に遊ぶ時間がある、休日にでかけられる、いつも笑顔で帰ってくる等';
@@ -455,7 +333,6 @@ if (goodPoints) goodPoints.placeholder = '家庭を大事にできる、有給�
 if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメールが入る、給与が上がりにくい等';
 }
 
-// 残業時間・疲労度ラベルの制御
 if (val === '社員本人') {
 if (overtimeGroup) overtimeGroup.classList.remove('hidden');
 if (fatigueLabel) fatigueLabel.textContent = '疲労度（5段階）';
@@ -469,7 +346,6 @@ if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段
 });
 }
 
-// 口コミカード描画
 function renderReviews(reviews) {
 const listDiv = document.getElementById('reviews-list');
 if (!listDiv) return;
@@ -525,7 +401,7 @@ ${r.overtime_hours ? `
 <div class="metric-value highlight">${r.return_time || '-'}</div>
 </div>
 <div class="metric-item">
-<div class="metric-label">休みの取りやすさ</div>
+<div class="metric-label">有休のとりやすさ</div>
 <div class="metric-value star">${leaveStars}</div>
 </div>
 <div class="metric-item">
@@ -546,6 +422,7 @@ ${r.overtime_hours ? `
 </div>
 </div>
 
+${r.jitankinmu_style ? `<div class="welfare-comment-box" style="border-left-color:#3182ce; background:#ebf8ff;">⏱️ 時短勤務の実態: ${r.jitankinmu_style}</div>` : ''}
 ${r.welfare_comment ? `<div class="welfare-comment-box">🎁 福利厚生メモ: ${r.welfare_comment}</div>` : ''}
 
 ${goodText ? `<div class="good-point-box">👍 <strong>良い点:</strong><br>${goodText}</div>` : ''}
@@ -555,7 +432,6 @@ ${badText ? `<div class="bad-point-box">⚠️ <strong>気になる点・悪い�
 }).join('');
 }
 
-// 口コミ一覧の取得
 async function fetchReviews() {
 const listDiv = document.getElementById('reviews-list');
 if (!supabaseClient) {
@@ -578,20 +454,18 @@ allReviews = data;
 renderReviews(allReviews);
 }
 
-// 検索機能
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
 searchInput.addEventListener('input', (e) => {
 const keyword = e.target.value.toLowerCase();
 const filtered = allReviews.filter(r => {
-const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment, r.telework_frequency].filter(Boolean).join(' ').toLowerCase();
+const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment, r.telework_frequency, r.jitankinmu_style].filter(Boolean).join(' ').toLowerCase();
 return text.includes(keyword);
 });
 renderReviews(filtered);
 });
 }
 
-// 投稿処理
 const reviewForm = document.getElementById('review-form');
 if (reviewForm) {
 reviewForm.addEventListener('submit', async (e) => {
@@ -603,6 +477,7 @@ const isEmployee = (position === '社員本人');
 
 const job_position = isChild ? '' : document.getElementById('job_position').value;
 const work_schedule = isChild ? '' : document.getElementById('work_schedule').value;
+const jitankinmu_style = (work_schedule === '時短勤務（短時間勤務制度）') ? document.getElementById('jitankinmu_style').value : '';
 const work_style = isChild ? '' : document.getElementById('work_style').value;
 const child_status = isChild ? '' : document.getElementById('child_status').value;
 
@@ -631,6 +506,7 @@ company_name,
 position,
 job_position,
 work_schedule,
+jitankinmu_style,
 commute_time,
 telework_frequency,
 overtime_hours,
@@ -654,6 +530,7 @@ alert('口コミを送信しました！管理者の承認後に掲載されま�
 reviewForm.reset();
 if (adultFields) adultFields.classList.remove('hidden');
 if (overtimeGroup) overtimeGroup.classList.add('hidden');
+if (jitanGroup) jitanGroup.classList.add('hidden');
 if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段階）';
 if (goodPoints) goodPoints.placeholder = '家庭を大事にできる、有給が取りやすい、持ち帰り仕事がない等';
 if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメールが入る、給与が上がりにくい等';
@@ -669,4 +546,3 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
