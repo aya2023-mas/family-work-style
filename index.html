@@ -290,6 +290,17 @@ margin-top: 8px;
 </select>
 </div>
 
+<div class="form-group">
+<label>在宅ワーク（リモートワーク）</label>
+<select id="telework_frequency">
+<option value="">選択してください</option>
+<option value="なし（出社のみ）">なし（出社のみ）</option>
+<option value="週1〜2日程度">週1〜2日程度</option>
+<option value="週3〜4日程度">週3〜4日程度</option>
+<option value="フルリモート（ほぼ全日）">フルリモート（ほぼ全日）</option>
+</select>
+</div>
+
 <!-- 社員本人のみ表示する残業時間グループ -->
 <div class="form-group hidden" id="overtime-field-group">
 <label>月の残業時間</label>
@@ -421,7 +432,7 @@ formContainer.classList.toggle('hidden');
 });
 }
 
-// 立場選択に応じた表示切り替え処理（子供非表示／残業時間／疲労度ラベル／良い点・悪い点のプレースホルダー）
+// 立場選択に応じた表示切り替え処理
 const positionSelect = document.getElementById('position');
 const adultFields = document.getElementById('adult-only-fields');
 const overtimeGroup = document.getElementById('overtime-field-group');
@@ -485,7 +496,6 @@ const welfareStars = r.welfare_rating ? '★'.repeat(parseInt(r.welfare_rating))
 const goodText = r.good_points || r.content || '';
 const badText = r.bad_points || '';
 
-// カード上の疲労度ラベルも立場によって分け分ける
 const fatigueTitle = (r.position === '社員本人') ? '疲労度' : '休日の疲れ';
 
 return `
@@ -500,6 +510,10 @@ ${tagHtml}
 <div class="metric-item">
 <div class="metric-label">通勤時間</div>
 <div class="metric-value highlight">${r.commute_time || '-'}</div>
+</div>
+<div class="metric-item">
+<div class="metric-label">在宅ワーク</div>
+<div class="metric-value highlight">${r.telework_frequency || '-'}</div>
 </div>
 ${r.overtime_hours ? `
 <div class="metric-item">
@@ -570,7 +584,7 @@ if (searchInput) {
 searchInput.addEventListener('input', (e) => {
 const keyword = e.target.value.toLowerCase();
 const filtered = allReviews.filter(r => {
-const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment].filter(Boolean).join(' ').toLowerCase();
+const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment, r.telework_frequency].filter(Boolean).join(' ').toLowerCase();
 return text.includes(keyword);
 });
 renderReviews(filtered);
@@ -593,6 +607,7 @@ const work_style = isChild ? '' : document.getElementById('work_style').value;
 const child_status = isChild ? '' : document.getElementById('child_status').value;
 
 const commute_time = document.getElementById('commute_time').value;
+const telework_frequency = document.getElementById('telework_frequency').value;
 const overtime_hours = isEmployee ? document.getElementById('overtime_hours').value : '';
 const return_time = document.getElementById('return_time').value;
 const leave_easiness = document.getElementById('leave_easiness').value;
@@ -617,6 +632,7 @@ position,
 job_position,
 work_schedule,
 commute_time,
+telework_frequency,
 overtime_hours,
 work_style,
 child_status,
