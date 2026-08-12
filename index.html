@@ -93,21 +93,34 @@ border: 1px solid #ccc;
 border-radius: 8px;
 font-size: 14px;
 }
-.checkbox-group {
+
+/* 四角枠で囲んだチェックボックス */
+.checkbox-box {
+border: 2px solid #cbd5e0;
+background-color: #ffffff;
+padding: 12px 14px;
+border-radius: 8px;
+margin-top: 20px;
+margin-bottom: 20px;
 display: flex;
 align-items: flex-start;
-gap: 8px;
-font-size: 13px;
-color: #4a5568;
-margin-top: 15px;
-margin-bottom: 15px;
+gap: 10px;
 }
-.checkbox-group input {
-width: 16px;
-height: 16px;
+.checkbox-box input[type="checkbox"] {
+width: 18px;
+height: 18px;
 margin-top: 2px;
 cursor: pointer;
 }
+.checkbox-box label {
+font-weight: normal;
+font-size: 13px;
+color: #2d3748;
+line-height: 1.5;
+margin: 0;
+cursor: pointer;
+}
+
 .send-btn {
 width: 100%;
 padding: 12px;
@@ -156,9 +169,19 @@ margin-bottom: 14px;
 .metric-value.highlight { color: #dd6b20; }
 .metric-value.star { color: #f6ad55; }
 
-.comment-box {
-background: #f7fafc;
-border-left: 3px solid #cbd5e0;
+.good-point-box {
+background: #f0fff4;
+border-left: 3px solid #38a169;
+padding: 12px 14px;
+font-size: 14px;
+line-height: 1.6;
+color: #2d3748;
+border-radius: 0 8px 8px 0;
+margin-top: 8px;
+}
+.bad-point-box {
+background: #fff5f5;
+border-left: 3px solid #e53e3e;
 padding: 12px 14px;
 font-size: 14px;
 line-height: 1.6;
@@ -226,6 +249,17 @@ margin-top: 8px;
 </div>
 
 <div class="form-group">
+<label>勤務形態</label>
+<select id="work_schedule">
+<option value="">選択してください</option>
+<option value="固定時間制（日勤）">固定時間制（日勤）</option>
+<option value="シフト制（不規則・交代制）">シフト制（不規則・交代制）</option>
+<option value="フレックスタイム制">フレックスタイム制</option>
+<option value="裁量労働制">裁量労働制</option>
+</select>
+</div>
+
+<div class="form-group">
 <label>働き方・家庭状況</label>
 <select id="work_style">
 <option value="">選択してください</option>
@@ -256,7 +290,8 @@ margin-top: 8px;
 </select>
 </div>
 
-<div class="form-group">
+<!-- 社員本人のみ表示する残業時間グループ -->
+<div class="form-group hidden" id="overtime-field-group">
 <label>月の残業時間</label>
 <select id="overtime_hours">
 <option value="">選択してください</option>
@@ -275,6 +310,7 @@ margin-top: 8px;
 <option value="〜20:00">〜20:00</option>
 <option value="〜21:00">〜21:00</option>
 <option value="22:00以降">22:00以降</option>
+<option value="シフトによる">シフトによる</option>
 </select>
 </div>
 
@@ -290,7 +326,8 @@ margin-top: 8px;
 </div>
 
 <div class="form-group">
-<label>疲労度（5段階）</label>
+<!-- 立場によってラベルテキストを動的に変更 -->
+<label id="fatigue_label">休日の疲れの残り方（5段階）</label>
 <select id="fatigue_level">
 <option value="3">★★★☆☆ 3 (標準)</option>
 <option value="5">★★★★★ 5 (ずっと寝ている)</option>
@@ -335,15 +372,20 @@ margin-top: 8px;
 </div>
 
 <div class="form-group">
-<label>口コミ・感想 *</label>
-<textarea id="content" rows="4" required placeholder="出張の頻度、家庭への影響などのリアルな感想を教えてください"></textarea>
+<label>良い点 *</label>
+<textarea id="good_points" rows="3" required placeholder="家庭を大事にできる、有給が取りやすい、持ち帰り仕事がない等"></textarea>
 </div>
 
-<!-- 信ぴょう性担保のチェックボックス -->
-<div class="checkbox-group">
+<div class="form-group">
+<label>悪い点・気になる点</label>
+<textarea id="bad_points" rows="3" placeholder="急な出張が多い、休日もメールが入る、給与が上がりにくい等"></textarea>
+</div>
+
+<!-- 四角枠で囲んだチェックボックス -->
+<div class="checkbox-box">
 <input type="checkbox" id="verify_authenticity" required>
-<label for="verify_authenticity" style="display:inline; font-weight:normal; margin:0;">
-社員もしくは家族であり、誹謗中傷目的の投稿ではないことを確認しました *
+<label for="verify_authenticity">
+上記の社員もしくはそのご家族であり、特定の個人・企業を誹謗中傷する目的の投稿ではないことを確認しました *
 </label>
 </div>
 
@@ -379,15 +421,35 @@ formContainer.classList.toggle('hidden');
 });
 }
 
-// 立場選択に応じた非表示切り替え処理
+// 立場選択に応じた表示切り替え処理（子供非表示／残業時間／疲労度ラベルの動的変更）
 const positionSelect = document.getElementById('position');
 const adultFields = document.getElementById('adult-only-fields');
-if (positionSelect && adultFields) {
+const overtimeGroup = document.getElementById('overtime-field-group');
+const fatigueLabel = document.getElementById('fatigue_label');
+
+if (positionSelect) {
 positionSelect.addEventListener('change', (e) => {
-if (e.target.value === '家族（子供）') {
-adultFields.style.display = 'none';
+const val = e.target.value;
+
+// 子供用制御
+if (adultFields) {
+if (val === '家族（子供）') {
+adultFields.classList.add('hidden');
 } else {
-adultFields.style.display = 'block';
+adultFields.classList.remove('hidden');
+}
+}
+
+// 残業時間・疲労度ラベルの制御
+if (val === '社員本人') {
+if (overtimeGroup) overtimeGroup.classList.remove('hidden');
+if (fatigueLabel) fatigueLabel.textContent = '疲労度（5段階）';
+} else {
+if (overtimeGroup) {
+overtimeGroup.classList.add('hidden');
+document.getElementById('overtime_hours').value = '';
+}
+if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段階）';
 }
 });
 }
@@ -403,19 +465,24 @@ return;
 }
 
 listDiv.innerHTML = reviews.map(r => {
-// タグ生成
 const tags = [];
 if (r.position) tags.push(r.position);
 if (r.job_position) tags.push(r.job_position);
+if (r.work_schedule) tags.push(r.work_schedule);
 if (r.work_style) tags.push(r.work_style);
 if (r.child_status) tags.push(r.child_status);
 
 const tagHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
 
-// 星表記
 const fatigueStars = r.fatigue_level ? '★'.repeat(parseInt(r.fatigue_level)) + '☆'.repeat(5 - parseInt(r.fatigue_level)) + ' ' + r.fatigue_level : '-';
 const leaveStars = r.leave_easiness ? '★'.repeat(parseInt(r.leave_easiness)) + '☆'.repeat(5 - parseInt(r.leave_easiness)) + ' ' + r.leave_easiness : '-';
 const welfareStars = r.welfare_rating ? '★'.repeat(parseInt(r.welfare_rating)) + '☆'.repeat(5 - parseInt(r.welfare_rating)) + ' ' + r.welfare_rating : '-';
+
+const goodText = r.good_points || r.content || '';
+const badText = r.bad_points || '';
+
+// カード上の疲労度ラベルも立場によって分け分ける
+const fatigueTitle = (r.position === '社員本人') ? '疲労度' : '休日の疲れ';
 
 return `
 <div class="review-card">
@@ -430,10 +497,11 @@ ${tagHtml}
 <div class="metric-label">通勤時間</div>
 <div class="metric-value highlight">${r.commute_time || '-'}</div>
 </div>
+${r.overtime_hours ? `
 <div class="metric-item">
 <div class="metric-label">月残業</div>
-<div class="metric-value highlight">${r.overtime_hours || '-'}</div>
-</div>
+<div class="metric-value highlight">${r.overtime_hours}</div>
+</div>` : ''}
 <div class="metric-item">
 <div class="metric-label">帰宅時間</div>
 <div class="metric-value highlight">${r.return_time || '-'}</div>
@@ -443,7 +511,7 @@ ${tagHtml}
 <div class="metric-value star">${leaveStars}</div>
 </div>
 <div class="metric-item">
-<div class="metric-label">疲労度</div>
+<div class="metric-label">${fatigueTitle}</div>
 <div class="metric-value star">${fatigueStars}</div>
 </div>
 <div class="metric-item">
@@ -462,9 +530,8 @@ ${tagHtml}
 
 ${r.welfare_comment ? `<div class="welfare-comment-box">🎁 福利厚生メモ: ${r.welfare_comment}</div>` : ''}
 
-<div class="comment-box">
-「${r.content || ''}」
-</div>
+${goodText ? `<div class="good-point-box">👍 <strong>良い点:</strong><br>${goodText}</div>` : ''}
+${badText ? `<div class="bad-point-box">⚠️ <strong>気になる点・悪い点:</strong><br>${badText}</div>` : ''}
 </div>
 `;
 }).join('');
@@ -499,7 +566,7 @@ if (searchInput) {
 searchInput.addEventListener('input', (e) => {
 const keyword = e.target.value.toLowerCase();
 const filtered = allReviews.filter(r => {
-const text = [r.company_name, r.content, r.position, r.job_position, r.work_style, r.welfare_comment].filter(Boolean).join(' ').toLowerCase();
+const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment].filter(Boolean).join(' ').toLowerCase();
 return text.includes(keyword);
 });
 renderReviews(filtered);
@@ -514,13 +581,15 @@ e.preventDefault();
 const position = document.getElementById('position').value;
 const company_name = document.getElementById('company_name').value;
 const isChild = (position === '家族（子供）');
+const isEmployee = (position === '社員本人');
 
 const job_position = isChild ? '' : document.getElementById('job_position').value;
+const work_schedule = isChild ? '' : document.getElementById('work_schedule').value;
 const work_style = isChild ? '' : document.getElementById('work_style').value;
 const child_status = isChild ? '' : document.getElementById('child_status').value;
 
 const commute_time = document.getElementById('commute_time').value;
-const overtime_hours = document.getElementById('overtime_hours').value;
+const overtime_hours = isEmployee ? document.getElementById('overtime_hours').value : '';
 const return_time = document.getElementById('return_time').value;
 const leave_easiness = document.getElementById('leave_easiness').value;
 const fatigue_level = document.getElementById('fatigue_level').value;
@@ -528,7 +597,8 @@ const holiday_contact = document.getElementById('holiday_contact').value;
 const holiday_work = document.getElementById('holiday_work').value;
 const welfare_rating = document.getElementById('welfare_rating').value;
 const welfare_comment = document.getElementById('welfare_comment').value;
-const content = document.getElementById('content').value;
+const good_points = document.getElementById('good_points').value;
+const bad_points = document.getElementById('bad_points').value;
 
 if (!supabaseClient) {
 alert('データベースに接続できませんでした。');
@@ -541,6 +611,7 @@ const { error } = await supabaseClient
 company_name,
 position,
 job_position,
+work_schedule,
 commute_time,
 overtime_hours,
 work_style,
@@ -552,7 +623,8 @@ holiday_contact,
 holiday_work,
 welfare_rating,
 welfare_comment,
-content
+good_points,
+bad_points
 }]);
 
 if (error) {
@@ -560,7 +632,9 @@ alert('送信に失敗しました: ' + error.message);
 } else {
 alert('口コミを送信しました！管理者の承認後に掲載されます。');
 reviewForm.reset();
-if (adultFields) adultFields.style.display = 'block';
+if (adultFields) adultFields.classList.remove('hidden');
+if (overtimeGroup) overtimeGroup.classList.add('hidden');
+if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段階）';
 formContainer.classList.add('hidden');
 }
 });
