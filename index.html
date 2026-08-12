@@ -421,23 +421,27 @@ formContainer.classList.toggle('hidden');
 });
 }
 
-// 立場選択に応じた表示切り替え処理（子供非表示／残業時間／疲労度ラベルの動的変更）
+// 立場選択に応じた表示切り替え処理（子供非表示／残業時間／疲労度ラベル／良い点・悪い点のプレースホルダー）
 const positionSelect = document.getElementById('position');
 const adultFields = document.getElementById('adult-only-fields');
 const overtimeGroup = document.getElementById('overtime-field-group');
 const fatigueLabel = document.getElementById('fatigue_label');
+const goodPoints = document.getElementById('good_points');
+const badPoints = document.getElementById('bad_points');
 
 if (positionSelect) {
 positionSelect.addEventListener('change', (e) => {
 const val = e.target.value;
 
 // 子供用制御
-if (adultFields) {
 if (val === '家族（子供）') {
-adultFields.classList.add('hidden');
+if (adultFields) adultFields.classList.add('hidden');
+if (goodPoints) goodPoints.placeholder = '例: 一緒に遊ぶ時間がある、休日にでかけられる、いつも笑顔で帰ってくる等';
+if (badPoints) badPoints.placeholder = '例: 帰りが遅くて寂しい、休日に疲れて寝ていることが多い、出張が多い等';
 } else {
-adultFields.classList.remove('hidden');
-}
+if (adultFields) adultFields.classList.remove('hidden');
+if (goodPoints) goodPoints.placeholder = '家庭を大事にできる、有給が取りやすい、持ち帰り仕事がない等';
+if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメールが入る、給与が上がりにくい等';
 }
 
 // 残業時間・疲労度ラベルの制御
@@ -635,6 +639,8 @@ reviewForm.reset();
 if (adultFields) adultFields.classList.remove('hidden');
 if (overtimeGroup) overtimeGroup.classList.add('hidden');
 if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段階）';
+if (goodPoints) goodPoints.placeholder = '家庭を大事にできる、有給が取りやすい、持ち帰り仕事がない等';
+if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメールが入る、給与が上がりにくい等';
 formContainer.classList.add('hidden');
 }
 });
@@ -647,5 +653,4 @@ fetchReviews();
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
 
