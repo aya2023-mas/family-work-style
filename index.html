@@ -361,7 +361,7 @@ if (r.position) tags.push(r.position);
 if (r.job_position) tags.push(r.job_position);
 if (r.work_schedule) tags.push(r.work_schedule);
 if (r.work_style) tags.push(r.work_style);
-if (r.child_status) tags.push(r.child_status);
+if (r.child_status) tags.push(r.child_status === 'なし' ? '子供なし' : (r.child_status === 'あり' ? '子供あり' : r.child_status));
 
 const tagHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
 
