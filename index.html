@@ -290,7 +290,7 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='家族'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👨‍👩‍👧 家族・パートナー目線</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='週'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🏠 在宅ワークあり</button>
-<button type="button" onclick="const input = document.getElementById('search-input'); input.value='休日出勤なし'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">📅 休日出勤なし</button>
+<button type="button" onclick="filterHolidayWorkNone()" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">📅 休日出勤なし</button>
 
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='休日連絡なし'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🔕 休日連絡なし</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='共働き'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👫 共働き</button>
@@ -573,24 +573,21 @@ formContainer.classList.add('hidden');
 
 fetchReviews();
 });
-// 休日出勤が「なし」の口コミだけを抽出して表示する関数
+// 「休日出勤なし」専用のフィルター関数
 function filterHolidayWorkNone() {
 const input = document.getElementById('search-input');
-if (input) input.value = ''; // 検索窓の文字をクリア
+if (input) input.value = ''; // 検索窓をクリア
 
-// 全口コミの中から「休日出勤」が「なし」のものだけをフィルタリング
-const filtered = allReviews.filter(review => {
-const holidayWorkVal = review.holiday_work || review.holidayWork || review['休日出勤'];
-return holidayWorkVal === 'なし';
+// 口コミデータ(allReviews)の中から「休日出勤」が「なし」のものだけを抽出
+const filtered = allReviews.filter(r => {
+const val = r.holiday_work || r.holidayWork || r['休日出勤'];
+return val === 'なし';
 });
 
-// 画面描画関数を実行
-if (typeof renderReviews === 'function') {
+// 画面を描画
 renderReviews(filtered);
-} else if (typeof displayReviews === 'function') {
-displayReviews(filtered);
 }
-}
+
 </script>
 
 <script defer src="/_vercel/insights/script.js"></script>
