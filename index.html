@@ -312,6 +312,7 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+window.allReviews = []; // ★
 const SUPABASE_URL = 'https://uzmxuoktvywktrwiumbx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jymAUZEcLhfk4tMxerrgnw_GOVB99YV';
 
@@ -482,6 +483,7 @@ return;
 }
 
 allReviews = data;
+window.allReviews = data; // 
 renderReviews(allReviews);
 }
 
