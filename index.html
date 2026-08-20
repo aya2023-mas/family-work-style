@@ -569,7 +569,7 @@ if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメー�
 formContainer.classList.add('hidden');
 }
 });
-}
+
 // 「休日出勤なし」専用のフィルター関数
 function filterHolidayWorkNone() {
 const input = document.getElementById('search-input');
@@ -584,7 +584,6 @@ return val === 'なし';
 
 renderReviews(filtered);
 }
-
 </script>
 
 <script defer src="/_vercel/insights/script.js"></script>
