@@ -274,9 +274,8 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 <p class="search-title">🔍 企業名で口コミを探す</p>
 <input type="text" id="search-input" class="search-input" placeholder="例: 〇〇株式会社、製造業...">
 </div>
-<!-- ピックアップ企業＆条件絞り込みエリア -->
+
 <div style="margin: 20px 0 24px;">
-<!-- ① 人気企業ピックアップ -->
 <p style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50;">🔥 注目の人気企業</p>
 <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px;">
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='日本航空'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">✈️ 日本航空</button>
@@ -285,13 +284,11 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='JTB'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">🧳 JTB</button>
 </div>
 
-<!-- ② 条件で絞り込む -->
 <p style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50;">🏷️ 条件で絞り込む</p>
 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='家族'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👨‍👩‍👧 家族・パートナー目線</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='週'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🏠 在宅ワークあり</button>
 <button type="button" onclick="filterHolidayWorkNone()" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">📅 休日出勤なし</button>
-
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='休日連絡なし'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🔕 休日連絡なし</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='共働き'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👫 共働き</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='固定'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">⏰ 固定時間制</button>
@@ -299,26 +296,18 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 </div>
 </div>
 
-
-
-
-
-
-
-
 <h2 class="list-title">口コミ一覧</h2>
 <div id="reviews-list">口コミを読み込み中...</div>
 </div>
 
 <script>
+window.allReviews = [];
+
 document.addEventListener('DOMContentLoaded', () => {
-window.allReviews = []; // ★
 const SUPABASE_URL = 'https://uzmxuoktvywktrwiumbx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jymAUZEcLhfk4tMxerrgnw_GOVB99YV';
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-let allReviews = [];
 
 const toggleBtn = document.getElementById('toggle-form-btn');
 const formContainer = document.getElementById('form-container');
@@ -377,6 +366,117 @@ if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段
 }
 });
 }
+
+fetchReviews();
+
+async function fetchReviews() {
+const listDiv = document.getElementById('reviews-list');
+if (!supabaseClient) {
+if (listDiv) listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
+return;
+}
+
+const { data, error } = await supabaseClient
+.from('reviews')
+.select('*')
+.eq('is_approved', true)
+.order('created_at', { ascending: false });
+
+if (error || !data) {
+if (listDiv) listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
+return;
+}
+
+window.allReviews = data;
+renderReviews(data);
+}
+
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+searchInput.addEventListener('input', (e) => {
+const keyword = e.target.value.toLowerCase();
+const filtered = (window.allReviews || []).filter(r => {
+const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment, r.telework_frequency, r.jitankinmu_style].filter(Boolean).join(' ').toLowerCase();
+return text.includes(keyword);
+});
+renderReviews(filtered);
+});
+}
+
+const reviewForm = document.getElementById('review-form');
+if (reviewForm) {
+reviewForm.addEventListener('submit', async (e) => {
+e.preventDefault();
+const position = document.getElementById('position').value;
+const company_name = document.getElementById('company_name').value;
+const isChild = (position === '家族（子供）');
+const isEmployee = (position === '社員本人');
+
+const job_position = isChild ? '' : document.getElementById('job_position').value;
+const work_schedule = isChild ? '' : document.getElementById('work_schedule').value;
+const jitankinmu_style = (work_schedule === '時短勤務（短時間勤務制度）') ? document.getElementById('jitankinmu_style').value : '';
+const work_style = isChild ? '' : document.getElementById('work_style').value;
+const child_status = isChild ? '' : document.getElementById('child_status').value;
+
+const commute_time = document.getElementById('commute_time').value;
+const telework_frequency = document.getElementById('telework_frequency').value;
+const overtime_hours = isEmployee ? document.getElementById('overtime_hours').value : '';
+const return_time = document.getElementById('return_time').value;
+const leave_easiness = document.getElementById('leave_easiness').value;
+const fatigue_level = document.getElementById('fatigue_level').value;
+const holiday_contact = document.getElementById('holiday_contact').value;
+const holiday_work = document.getElementById('holiday_work').value;
+const welfare_rating = document.getElementById('welfare_rating').value;
+const welfare_comment = document.getElementById('welfare_comment').value;
+const good_points = document.getElementById('good_points').value;
+const bad_points = document.getElementById('bad_points').value;
+
+if (!supabaseClient) {
+alert('データベースに接続できませんでした。');
+return;
+}
+
+const { error } = await supabaseClient
+.from('reviews')
+.insert([{
+company_name,
+position,
+content: good_points,
+job_position,
+work_schedule,
+jitankinmu_style,
+commute_time,
+telework_frequency,
+overtime_hours,
+work_style,
+child_status,
+return_time,
+leave_easiness,
+fatigue_level,
+holiday_contact,
+holiday_work,
+welfare_rating,
+welfare_comment,
+good_points,
+bad_points
+}]);
+
+if (error) {
+alert('送信に失敗しました: ' + error.message);
+} else {
+alert('口コミを送信しました！管理者の承認後に掲載されます。');
+reviewForm.reset();
+if (adultFields) adultFields.classList.remove('hidden');
+if (overtimeGroup) overtimeGroup.classList.add('hidden');
+if (jitanGroup) jitanGroup.classList.add('hidden');
+if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段階）';
+if (goodPoints) goodPoints.placeholder = '家庭を大事にできる、有給が取りやすい、持ち帰り仕事がない等';
+if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメールが入る、給与が上がりにくい等';
+formContainer.classList.add('hidden');
+}
+});
+}
+});
 
 function renderReviews(reviews) {
 const listDiv = document.getElementById('reviews-list');
@@ -464,121 +564,11 @@ ${badText ? `<div class="bad-point-box">⚠️ <strong>気になる点・悪い�
 }).join('');
 }
 
-async function fetchReviews() {
-const listDiv = document.getElementById('reviews-list');
-if (!supabaseClient) {
-if (listDiv) listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
-return;
-}
-
-const { data, error } = await supabaseClient
-.from('reviews')
-.select('*')
-.eq('is_approved', true)
-.order('created_at', { ascending: false });
-
-if (error || !data) {
-if (listDiv) listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
-return;
-}
-
-allReviews = data;
-window.allReviews = data; // 
-renderReviews(allReviews);
-}
-fetchReviews(); //
-
-const searchInput = document.getElementById('search-input');
-if (searchInput) {
-searchInput.addEventListener('input', (e) => {
-const keyword = e.target.value.toLowerCase();
-const filtered = allReviews.filter(r => {
-const text = [r.company_name, r.good_points, r.bad_points, r.content, r.position, r.job_position, r.work_schedule, r.work_style, r.welfare_comment, r.telework_frequency, r.jitankinmu_style].filter(Boolean).join(' ').toLowerCase();
-return text.includes(keyword);
-});
-renderReviews(filtered);
-});
-}
-
-const reviewForm = document.getElementById('review-form');
-if (reviewForm) {
-reviewForm.addEventListener('submit', async (e) => {
-e.preventDefault();
-const position = document.getElementById('position').value;
-const company_name = document.getElementById('company_name').value;
-const isChild = (position === '家族（子供）');
-const isEmployee = (position === '社員本人');
-
-const job_position = isChild ? '' : document.getElementById('job_position').value;
-const work_schedule = isChild ? '' : document.getElementById('work_schedule').value;
-const jitankinmu_style = (work_schedule === '時短勤務（短時間勤務制度）') ? document.getElementById('jitankinmu_style').value : '';
-const work_style = isChild ? '' : document.getElementById('work_style').value;
-const child_status = isChild ? '' : document.getElementById('child_status').value;
-
-const commute_time = document.getElementById('commute_time').value;
-const telework_frequency = document.getElementById('telework_frequency').value;
-const overtime_hours = isEmployee ? document.getElementById('overtime_hours').value : '';
-const return_time = document.getElementById('return_time').value;
-const leave_easiness = document.getElementById('leave_easiness').value;
-const fatigue_level = document.getElementById('fatigue_level').value;
-const holiday_contact = document.getElementById('holiday_contact').value;
-const holiday_work = document.getElementById('holiday_work').value;
-const welfare_rating = document.getElementById('welfare_rating').value;
-const welfare_comment = document.getElementById('welfare_comment').value;
-const good_points = document.getElementById('good_points').value;
-const bad_points = document.getElementById('bad_points').value;
-
-if (!supabaseClient) {
-alert('データベースに接続できませんでした。');
-return;
-}
-
-const { error } = await supabaseClient
-.from('reviews')
-.insert([{
-company_name,
-position,
-content: good_points,
-job_position,
-work_schedule,
-jitankinmu_style,
-commute_time,
-telework_frequency,
-overtime_hours,
-work_style,
-child_status,
-return_time,
-leave_easiness,
-fatigue_level,
-holiday_contact,
-holiday_work,
-welfare_rating,
-welfare_comment,
-good_points,
-bad_points
-}]);
-
-if (error) {
-alert('送信に失敗しました: ' + error.message);
-} else {
-alert('口コミを送信しました！管理者の承認後に掲載されます。');
-reviewForm.reset();
-if (adultFields) adultFields.classList.remove('hidden');
-if (overtimeGroup) overtimeGroup.classList.add('hidden');
-if (jitanGroup) jitanGroup.classList.add('hidden');
-if (fatigueLabel) fatigueLabel.textContent = '休日の疲れの残り方（5段階）';
-if (goodPoints) goodPoints.placeholder = '家庭を大事にできる、有給が取りやすい、持ち帰り仕事がない等';
-if (badPoints) badPoints.placeholder = '急な出張が多い、休日もメールが入る、給与が上がりにくい等';
-formContainer.classList.add('hidden');
-}
-});
-
-// 「休日出勤なし」専用のフィルター関数
 function filterHolidayWorkNone() {
 const input = document.getElementById('search-input');
 if (input) input.value = '';
 
-const reviews = window.allReviews || (typeof allReviews !== 'undefined' ? allReviews : []);
+const reviews = window.allReviews || [];
 
 const filtered = reviews.filter(r => {
 const val = r.holiday_work || r.holidayWork || r['休日出勤'];
