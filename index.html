@@ -289,7 +289,7 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='家族'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👨‍👩‍👧 家族・パートナー目線</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='週'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🏠 在宅ワークあり</button>
 <button type="button" onclick="filterHolidayWorkNone()" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">📅 休日出勤なし</button>
-<button type="button" onclick="const input = document.getElementById('search-input'); input.value='休日連絡なし'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🔕 休日連絡なし</button>
+<button type="button" onclick="filterHolidayContactNone()" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🔕 休日連絡なし</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='共働き'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👫 共働き</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='固定'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">⏰ 固定時間制</button>
 <button type="button" onclick="const input = document.getElementById('search-input'); input.value='あり'; input.dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👶 子育て世帯</button>
@@ -483,7 +483,7 @@ const listDiv = document.getElementById('reviews-list');
 if (!listDiv) return;
 
 if (reviews.length === 0) {
-listDiv.innerHTML = '<p style="color:#777;">まだ承認された口コミはありません。</p>';
+listDiv.innerHTML = '<p style="color:#777;">該当する口コミが見つかりませんでした。</p>';
 return;
 }
 
@@ -569,12 +569,16 @@ const input = document.getElementById('search-input');
 if (input) input.value = '';
 
 const reviews = window.allReviews || [];
+const filtered = reviews.filter(r => (r.holiday_work || r.holidayWork || r['休日出勤']) === 'なし');
+renderReviews(filtered);
+}
 
-const filtered = reviews.filter(r => {
-const val = r.holiday_work || r.holidayWork || r['休日出勤'];
-return val === 'なし';
-});
+function filterHolidayContactNone() {
+const input = document.getElementById('search-input');
+if (input) input.value = '';
 
+const reviews = window.allReviews || [];
+const filtered = reviews.filter(r => (r.holiday_contact || r.holidayContact || r['休日連絡']) === 'なし');
 renderReviews(filtered);
 }
 </script>
