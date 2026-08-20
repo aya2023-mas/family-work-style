@@ -274,6 +274,25 @@ background: #ffffff; padding: 12px; border-radius: 8px; border: 1px solid #edf2f
 <p class="search-title">🔍 企業名で口コミを探す</p>
 <input type="text" id="search-input" class="search-input" placeholder="例: 〇〇株式会社、製造業...">
 </div>
+<!-- ピックアップ企業＆条件絞り込みタグ -->
+<div style="margin: 20px 0 24px;">
+<!-- ① 人気企業ピックアップ -->
+<p style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50;">🔥 注目の人気企業</p>
+<div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px;">
+<button type="button" onclick="document.getElementById('search-input').value='日本航空'; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">✈️ 日本航空</button>
+<button type="button" onclick="document.getElementById('search-input').value='三井物産'; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">🏢 三井物産</button>
+<button type="button" onclick="document.getElementById('search-input').value='アクセンチュア'; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #eef2f5; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer;">💻 アクセンチュア</button>
+</div>
+
+<!-- ② 条件で絞り込む -->
+<p style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50;">🏷️ 条件で絞り込む</p>
+<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<button type="button" onclick="document.getElementById('search-input').value='在宅'; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🏠 在宅ワークあり</button>
+<button type="button" onclick="document.getElementById('search-input').value='なし'; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">🔕 休日連絡なし</button>
+<button type="button" onclick="document.getElementById('search-input').value='共働き'; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="padding: 6px 12px; background: #fff; border: 1px solid #008040; color: #008040; border-radius: 16px; font-size: 12px; font-weight: bold; cursor: pointer;">👫 共働き</button>
+</div>
+</div>
+
 
 <h2 class="list-title">口コミ一覧</h2>
 <div id="reviews-list">口コミを読み込み中...</div>
