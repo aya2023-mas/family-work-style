@@ -570,30 +570,19 @@ formContainer.classList.add('hidden');
 }
 });
 }
-window.allReviews = typeof allReviews !== 'undefined' ? allReviews : [];
-fetchReviews();
-});
 // 「休日出勤なし」専用のフィルター関数
 function filterHolidayWorkNone() {
 const input = document.getElementById('search-input');
 if (input) input.value = '';
 
-// window.allReviews または fetch 済みのデータから「なし」を抽出
-const reviews = window.allReviews || typeof allReviews !== 'undefined' ? allReviews : [];
+const reviews = window.allReviews || (typeof allReviews !== 'undefined' ? allReviews : []);
 
-if (reviews.length > 0) {
 const filtered = reviews.filter(r => {
 const val = r.holiday_work || r.holidayWork || r['休日出勤'];
 return val === 'なし';
 });
+
 renderReviews(filtered);
-} else {
-// データが取得できない場合の安全策（検索窓経由）
-if (input) {
-input.value = 'なし';
-input.dispatchEvent(new Event('input'));
-}
-}
 }
 
 </script>
